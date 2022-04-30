@@ -158,4 +158,102 @@ This code consisits of additional switch. To further simplify, we use below comm
 
 **3. DAY2- Timing libs, hierarchical vs flat synthesis and efficient flop coding styles**
 **Introduction to timing .libs**
-**LAB4**
+**LAB4-SKY130RTL D2SK1 L1 Lab4 Introduction to dot Lib**
+
+This lab guides us through the .lib files where we have all the gates coded in. According to the below parameters the libraries will be characterized to model the variations.
+
+![lib1](https://user-images.githubusercontent.com/104454253/166105787-19a638a3-fe01-4fcf-828d-0b56a6acb8f7.JPG)
+
+Command to open the sky130_fd_sc_hd__tt_025C_1v80.lib file:
+
+**~/sky130RTLDesignAndSynthesisWorkshop/verilog_files$ gvim ../my_lib/lib/sky130_fd_sc_hd__tt_025C_1v80.lib**
+
+With in the lib file, the gates are delared as follows to meet the variations due to process, temperatures and voltages.
+
+![lib3](https://user-images.githubusercontent.com/104454253/166106366-2368d29d-d79d-41e1-880d-1bfbdd4e9b2d.JPG)
+
+For the above example, for all the 32 cominations i.e 2^5 (5 is no.of variables), the delays, powers are mentioned.
+
+![lib4](https://user-images.githubusercontent.com/104454253/166106592-cd478c97-95de-4513-be9f-84a34fc966ca.JPG)
+
+This image displays the power consumtion comparision.
+
+![lib5](https://user-images.githubusercontent.com/104454253/166107259-6fa398a4-2099-4da3-9b93-818c2c3f2404.JPG)
+
+**LAB-5-SKY130RTL D2SK2 L1 Lab05 Hier synthesis flat synthesis part1**
+
+**multiple_module.v**
+module sub_module2 (input a, input b, output y);
+	assign y = a | b;
+endmodule
+
+module sub_module1 (input a, input b, output y);
+	assign y = a&b;
+endmodule
+
+
+module multiple_modules (input a, input b, input c , output y);
+	wire net1;
+	sub_module1 u1(.a(a),.b(b),.y(net1));  //net1 = a&b
+	sub_module2 u2(.a(net1),.b(c),.y(y));  //y = net1|c ,ie y = a&b + c;
+endmodule
+
+This is the schematic as per the connections in the above module.
+
+![94d6174a-bcb0-4cad-bef6-a0537ef32ef1](https://user-images.githubusercontent.com/104454253/166108402-f96b7fa9-3d8f-4f05-b4cb-89e443e43718.jpg)
+
+However, the yosys synthesizer generates the following schematic instead of the above one and with in the submodules, the connections are made
+
+![lab5](https://user-images.githubusercontent.com/104454253/166108721-0e13ddc4-6c31-45bb-b735-560646e7497e.JPG)
+
+Here is the netlist code for the  multiple_modules:
+
+**module multiple_modules(a, b, c, y);
+  input a;
+  input b;
+  input c;
+  wire net1;
+  output y;
+  sub_module1 u1 (
+    .a(a),
+    .b(b),
+    .y(net1)
+  );
+  sub_module2 u2 (
+    .a(net1),
+    .b(c),
+    .y(y)
+  );
+endmodule
+module sub_module1(a, b, y);
+  wire _0_;
+  wire _1_;
+  wire _2_;
+  input a;
+  input b;
+  output y;
+  sky130_fd_sc_hd__and2_0 _3_ (
+    .A(_1_),
+    .B(_0_),
+    .X(_2_)
+  );
+  assign _1_ = b;
+  assign _0_ = a;
+  assign y = _2_;
+endmodule
+module sub_module2(a, b, y);
+  wire _0_;
+  wire _1_;
+  wire _2_;
+  input a;
+  input b;
+  output y;
+  sky130_fd_sc_hd__lpflow_inputiso1p_1 _3_ (
+    .A(_1_),
+    .SLEEP(_0_),
+    .X(_2_)
+  );
+  assign _1_ = b;
+  assign _0_ = a;
+  assign y = _2_;
+endmodule**
