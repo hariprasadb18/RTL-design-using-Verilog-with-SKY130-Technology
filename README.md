@@ -10,22 +10,21 @@ This report is a final submission of 5-day workshop from [VLSI Sytem Design-IAT]
 
 RTL Design: In simple terms RTL design or Register Transfer Level design is a method in which we can transfer data from one register to another. In RTL design we write code for Combinational and Sequential circuits in HDL(Hardware Description Language) like Verilog or VerilogHDL which can model logical and hardware operation. RTL design can be one code or set of verilog codes. **One key note is that we need to write RTL design with optimized and synthesizable (realizable as physical gates)**.
 
+Sample RTL design outline:
+**module module_name (port list);
+//declarations;
+//initializations;
+//continuos concurrent assigments;
+//procedural blocks;
+endmodule**
+
 Test Bench: Using Verilog we can write a test bench to apply stimulus to the RTL design and verify the results of the design by instantiating design with in test bench. Up-front verification becomes very important as design size increases in size and complexity while any project progresses. This ensures simulation results matches with post synthesis results. A test bench can have two parts, the one generates input signals for the model to be tested while the other part checks the output signals from the design under test. It can be represented as follows.
 ![Capture2](https://user-images.githubusercontent.com/104454253/166088950-634be5a4-7d5a-4b43-9990-711f8f660aaf.JPG)
 
 Simulation: RTL design is checked for adherence to its design specification using simulation by giving sample inputs. This helps finding and fixing bugs in the RTL design in the early stages of design development. 
 
 Simulator: Simulator is the tool used for this process. It looks for changes on input signals to evaluate outputs. No change in output if there is no change in input signals
-
-Synthesis: Synthesis transforms the simple RTL design into a gate-level netlist with all the constraints as specified by the designer. In simple language, Synthesis is a process that converts the abstract form of design to a properly implemented chip in terms of logic gates.
-
-Synthesis takes place in multiple steps:
-- Converting RTL into simple logic gates.
-- Mapping those gates to actual technology-dependent logic gates available in the technology libraries.
-- Optimizing the mapped netlist keeping the constraints set by the designer intact.
-
-Synthesizer: It is a tool we use to convert out RTL design code to netlist. Yosys is the tool I've used in this workshop.
-Here is the flow of above processess.
+Here is the flow of frondend design:
 ![Capture1](https://user-images.githubusercontent.com/104454253/166088866-80a4e792-7db7-4bf2-b3b5-b4b9b92452a8.JPG)
 Labs using iverilog and gtkwave
 Lab1- We were introducted to Linux operating system and were made aware of the basic commands. Using **git clone** command we've cloned library files like standard cell library, primitives which are used for synthesis and few verilog codes for practice.
@@ -74,7 +73,7 @@ endmodule**
 
 
 Introduction to Yosys
-Yosys: I was given an overview of the operation of the tool and the files we'll need to provide the tool to give the required netlist. We give RTL design code, .lib file which has all the building blocks of the netlist. Using these two files, Yosys synthesizer generates a netlist file. It basically contains the equivalent gate level representation of the RTL code. Below are the commands to perform above synthesis.
+Yosys: I was given an overview of the operation of the tool and the files we'll need to provide the tool to give the required netlist. We give RTL design code, .lib file which has all the building blocks of the netlist. Using these two files, Yosys synthesizer generates a netlist file. .lib basically is a collection of logical modules like, And, Or, Not etc.... These are equivalent gate level representation of the RTL code. Below are the commands to perform above synthesis.
 
 RTL Design  - read_verilog
 .lib        - read_liberty
@@ -89,3 +88,74 @@ Verification of Synthesized design: In order to make sure that there are no erro
 The gtkwave output for the netlist should match the output waveform for the RTL design file. As netlist and design code have same set of inputs and outputs, we can use the same testbench and compare the waveforms.
 
 Introduction to loigc synthesis:
+Below is the snippet RTL code and equivalent digital circuit:
+![sample rtl](https://user-images.githubusercontent.com/104454253/166097112-0fb5685c-fe88-4ca0-8ecf-bc014de46088.JPG)
+
+In the above image, mapping of code and digital circuit is done using Synthesis.
+Synthesis: Synthesis transforms the simple RTL design into a gate-level netlist with all the constraints as specified by the designer. In simple language, Synthesis is a process that converts the abstract form of design to a properly implemented chip in terms of logic gates.
+
+Synthesis takes place in multiple steps:
+- Converting RTL into simple logic gates.
+- Mapping those gates to actual technology-dependent logic gates available in the technology libraries.
+- Optimizing the mapped netlist keeping the constraints set by the designer intact.
+
+Synthesizer: It is a tool we use to convert out RTL design code to netlist. Yosys is the tool I've used in this workshop.
+Here is the flow of above processess.
+
+
+![rtl-netlist](https://user-images.githubusercontent.com/104454253/166097298-41d913ee-640d-4e1e-9e70-5bf427f35ef4.JPG)
+
+.lib: It is a collection of logical modules like, And, Or, Not etc...It has different flvors of same gate like 2 input AND gate, 3 input AND gate etc... with different performace speed.
+
+Need for different flavours of gate: In order to make a faster circuit, the clock frequency should be high. For that the time period of the clock should be as low as possible. However, in a sequential circuit, clock period depends on three factors so that data is not lost or to be glitch free.
+
+For the below circuit the three factors are
+- Clock to Q of flipflop A
+- Propagation delay of combinational circuit
+- Setuptime of flipflop B
+![Timedelay circuit](https://user-images.githubusercontent.com/104454253/166098730-33bf0734-abec-466f-abe2-a2ac6813b5e0.JPG)
+
+The equation is as follows
+![Time](https://user-images.githubusercontent.com/104454253/166097710-2c1099e3-6323-496c-8eb7-12ee04c12096.JPG)
+As per the above equation, for a smaller propagation delay, we need faster cells.
+But again, why do we have faster cells? This is to ensure that there are no HOLD time violations at B flipflop.
+**This complete collection forms .lib**
+
+**Faster Cells vs Slower Cells**: 
+Load in digital circuit is of **Capacitence**. Faster the charging or dicharging of capacitance, lesser is the celll delay. However, for a quick charge/ discharge of capacitor, we need transistors capable of sourcing more current i.e, we need WIDE TRANSISTORS. 
+Wider transistors have lesser delay but consume more area and power. Narrow transistors are other way around. Faster cells come with a cost of area and power.
+
+**Selection of the Cells**: We'll need to guide the Synthesizer to choose the flavour of cells that is optimum for implementation of logic circuit. Keeping in view of previous observations of faster vs slower cells,to avoid hold time violations, larger circuits, sluggish circuits, we offer guidance to synthesizer in the form of **Constraints**.
+Below is an illustration of Synthesis.
+![Screenshot (44)](https://user-images.githubusercontent.com/104454253/166099264-e3842e91-1a27-44ae-830c-0757dc5b1a5e.png)
+
+**Labs using Yosys and SKY130 PDKs**
+**LAB-3**
+Invoking Yosys:
+
+![invoking yosys](https://user-images.githubusercontent.com/104454253/166099491-8ee3ad06-1b1e-4483-9451-2372f08aab9b.JPG)
+
+Snippet below illustrates reading .lib, design and choosing the module to synthesize:
+
+![yosys1](https://user-images.githubusercontent.com/104454253/166100005-8a2e45e9-2977-4743-b475-515996a046d9.JPG)
+
+Generating Netlist: The logic of good_mux will be realizable using gates in the sky130_fd_sc_hd__tt_025C_1v80.lib file.
+
+![yosys2](https://user-images.githubusercontent.com/104454253/166100160-7b8c5847-62b4-49e9-9a90-c4f4c8ff840f.JPG)
+
+Below is the snippet showing the synthesis results and synthesized circuit for multiplexer.
+
+![Yosys3](https://user-images.githubusercontent.com/104454253/166100442-282863cb-8854-44c8-9ab7-f411f8348520.JPG)
+
+**Netlist Code**
+
+![yosys4](https://user-images.githubusercontent.com/104454253/166101176-50cf9b44-3ca7-4d1c-bb2e-392498d82ddd.JPG)
+
+This code consisits of additional switch. To further simplify, we use below command
+**Simplified netlist code**
+
+![Yosys5](https://user-images.githubusercontent.com/104454253/166101451-5d963a17-4cb7-47fd-818d-c7d34df2665c.JPG)
+
+**3. DAY2- Timing libs, hierarchical vs flat synthesis and efficient flop coding styles**
+**Introduction to timing .libs**
+**LAB4**
