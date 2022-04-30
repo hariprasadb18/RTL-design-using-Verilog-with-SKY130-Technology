@@ -11,12 +11,12 @@ This report is a final submission of 5-day workshop from [VLSI Sytem Design-IAT]
 RTL Design: In simple terms RTL design or Register Transfer Level design is a method in which we can transfer data from one register to another. In RTL design we write code for Combinational and Sequential circuits in HDL(Hardware Description Language) like Verilog or VerilogHDL which can model logical and hardware operation. RTL design can be one code or set of verilog codes. **One key note is that we need to write RTL design with optimized and synthesizable (realizable as physical gates)**.
 
 Sample RTL design outline:
-**module module_name (port list);
-//declarations;
-//initializations;
-//continuos concurrent assigments;
-//procedural blocks;
-endmodule**
+**module module_name (port list);<br />
+//declarations;<br />
+//initializations;<br />
+//continuos concurrent assigments;<br />
+//procedural blocks;<br />
+endmodule**<br />
 
 Test Bench: Using Verilog we can write a test bench to apply stimulus to the RTL design and verify the results of the design by instantiating design with in test bench. Up-front verification becomes very important as design size increases in size and complexity while any project progresses. This ensures simulation results matches with post synthesis results. A test bench can have two parts, the one generates input signals for the model to be tested while the other part checks the output signals from the design under test. It can be represented as follows.
 ![Capture2](https://user-images.githubusercontent.com/104454253/166088950-634be5a4-7d5a-4b43-9990-711f8f660aaf.JPG)
@@ -36,40 +36,44 @@ In this session, I've performed simulation of multiplexer. I've added both the R
 
 Here are the code and gtkwave snippets:
 
-
-**module good_mux (input i0 , input i1 , input sel , output reg y);
-always @ (*)
-begin
-	if(sel)
-		y <= i1;
-	else 
-		y <= i0;
-end
-endmodule**
+![muxcommands](https://user-images.githubusercontent.com/104454253/166117682-8c5149a4-8df9-456c-8e9a-744d6693243d.JPG)
 
 
-**`timescale 1ns / 1ps
-module tb_good_mux;
-	// Inputs
-	reg i0,i1,sel;
-	// Outputs
-	wire y;
-       // Instantiate the Unit Under Test (UUT), name based instantiation
-	good_mux uut (.sel(sel),.i0(i0),.i1(i1),.y(y));
-	//good_mux uut (sel,i0,i1,y);  //order based instantiation
-	initial begin
-	$dumpfile("tb_good_mux.vcd");
-	$dumpvars(0,tb_good_mux);
-	// Initialize Inputs
-	sel = 0;
-	i0 = 0;
-	i1 = 0;
-	#300 $finish;
-	end
-always #75 sel = ~sel;
-always #10 i0 = ~i0;
-always #55 i1 = ~i1;
-endmodule**
+**module good_mux (input i0 , input i1 , input sel , output reg y); <br />
+always @ (*)<br />
+begin<br />
+	if(sel)<br />
+		y <= i1;<br />
+	else <br />
+		y <= i0;<br />
+end<br />
+endmodule**<br />
+
+
+**`timescale 1ns / 1ps<br />
+module tb_good_mux;<br />
+	// Inputs<br />
+	reg i0,i1,sel;<br />
+	// Outputs<br />
+	wire y;<br />
+       // Instantiate the Unit Under Test (UUT), name based instantiation<br />
+	good_mux uut (.sel(sel),.i0(i0),.i1(i1),.y(y));<br />
+	//good_mux uut (sel,i0,i1,y);  //order based instantiation<br />
+	initial begin<br />
+	$dumpfile("tb_good_mux.vcd");<br />
+	$dumpvars(0,tb_good_mux);<br />
+	// Initialize Inputs<br />
+	sel = 0;<br />
+	i0 = 0;<br />
+	i1 = 0;<br />
+	#300 $finish;<br />
+	end<br />
+always #75 sel = ~sel;<br />
+always #10 i0 = ~i0;<br />
+always #55 i1 = ~i1;<br />
+endmodule**<br />
+
+![goodmuxgtkwaveCapture](https://user-images.githubusercontent.com/104454253/166117453-7f4918e9-acb4-4ad5-b35a-0933c8578312.JPG)
 
 
 Introduction to Yosys
@@ -183,20 +187,20 @@ This image displays the power consumtion comparision.
 **LAB-5-SKY130RTL D2SK2 L1 Lab05 Hier synthesis flat synthesis part1**
 
 **multiple_module.v**
-module sub_module2 (input a, input b, output y);
-	assign y = a | b;
-endmodule
+module sub_module2 (input a, input b, output y);<br />
+	assign y = a | b;<br />
+endmodule<br />
 
-module sub_module1 (input a, input b, output y);
-	assign y = a&b;
-endmodule
+module sub_module1 (input a, input b, output y);<br />
+	assign y = a&b;<br />
+endmodule<br />
 
 
-module multiple_modules (input a, input b, input c , output y);
-	wire net1;
-	sub_module1 u1(.a(a),.b(b),.y(net1));  //net1 = a&b
-	sub_module2 u2(.a(net1),.b(c),.y(y));  //y = net1|c ,ie y = a&b + c;
-endmodule
+module multiple_modules (input a, input b, input c , output y);<br />
+	wire net1;<br />
+	sub_module1 u1(.a(a),.b(b),.y(net1));  //net1 = a&b<br />
+	sub_module2 u2(.a(net1),.b(c),.y(y));  //y = net1|c ,ie y = a&b + c;<br />
+endmodule<br />
 
 This is the schematic as per the connections in the above module.
 
@@ -206,54 +210,242 @@ However, the yosys synthesizer generates the following schematic instead of the 
 
 ![lab5](https://user-images.githubusercontent.com/104454253/166108721-0e13ddc4-6c31-45bb-b735-560646e7497e.JPG)
 
-Here is the netlist code for the  multiple_modules:
+Thesynthesizer considers the module hierarcy and does the mapping accordting to instantiation. Here is the hierarchical netlist code for the  multiple_modules:
 
-**module multiple_modules(a, b, c, y);
-  input a;
-  input b;
-  input c;
-  wire net1;
-  output y;
-  sub_module1 u1 (
-    .a(a),
-    .b(b),
-    .y(net1)
-  );
-  sub_module2 u2 (
-    .a(net1),
-    .b(c),
-    .y(y)
-  );
-endmodule
-module sub_module1(a, b, y);
-  wire _0_;
-  wire _1_;
-  wire _2_;
-  input a;
-  input b;
-  output y;
-  sky130_fd_sc_hd__and2_0 _3_ (
-    .A(_1_),
-    .B(_0_),
-    .X(_2_)
-  );
-  assign _1_ = b;
-  assign _0_ = a;
-  assign y = _2_;
-endmodule
-module sub_module2(a, b, y);
-  wire _0_;
-  wire _1_;
-  wire _2_;
-  input a;
-  input b;
-  output y;
-  sky130_fd_sc_hd__lpflow_inputiso1p_1 _3_ (
-    .A(_1_),
-    .SLEEP(_0_),
-    .X(_2_)
-  );
-  assign _1_ = b;
-  assign _0_ = a;
-  assign y = _2_;
-endmodule**
+**module multiple_modules(a, b, c, y); <br />
+  input a;<br />
+  input b;<br />
+  input c;<br />
+  wire net1;<br />
+  output y;<br />
+  sub_module1 u1 (.a(a),.b(b),.y(net1) );<br />
+  sub_module2 u2 (.a(net1),.b(c),.y(y));<br />
+endmodule<br />
+module sub_module1(a, b, y);<br />
+  wire _0_;<br />
+  wire _1_;<br />
+  wire _2_;<br />
+  input a;<br />
+  input b;<br />
+  output y;<br />
+  sky130_fd_sc_hd__and2_0 _3_ (.A(_1_),.B(_0_),.X(_2_));<br />
+  assign _1_ = b;<br />
+  assign _0_ = a;<br />
+  assign y = _2_;<br />
+endmodule<br />
+module sub_module2(a, b, y);<br />
+  wire _0_;<br />
+  wire _1_;<br />
+  wire _2_;<br />
+  input a;<br />
+  input b;<br />
+  output y;<br />
+  sky130_fd_sc_hd__lpflow_inputiso1p_1 _3_ (.A(_1_),.SLEEP(_0_),.X(_2_) );<br />
+  assign _1_ = b;<br />
+  assign _0_ = a;<br />
+  assign y = _2_;<br />
+endmodule**<br />
+
+**SKY130RTL D2SK2 L2 Lab05 Hier synthesis flat synthesis part2**
+Flattened netlist:
+
+In flanneted netlist, the hierarcies are flattend out and there is single module i.e, gates are instantiated directly instead of sub_modules. Here is the flattened netlist code for the  multiple_modules:
+
+**module multiple_modules(a, b, c, y);<br />
+  wire _0_;<br />
+  wire _1_;<br />
+  wire _2_;<br />
+  wire _3_;<br />
+  wire _4_;<br />
+  wire _5_;<br />
+  input a;<br />
+  input b;<br />
+  input c;<br />
+  wire net1;<br />
+  wire \u1.a ;<br />
+  wire \u1.b ;<br />
+  wire \u1.y ;<br />
+  wire \u2.a ;<br />
+  wire \u2.b ;<br />
+  wire \u2.y ;<br />
+  output y;<br />
+  sky130_fd_sc_hd__and2_0 _6_ (<br />
+    .A(_1_),<br />
+    .B(_0_),<br />
+    .X(_2_)<br />
+  );<br />
+  sky130_fd_sc_hd__lpflow_inputiso1p_1 _7_ (<br />
+    .A(_4_),<br />
+    .SLEEP(_3_),<br />
+    .X(_5_)<br />
+  );<br />
+  assign _4_ = \u2.b ;<br />
+  assign _3_ = \u2.a ;<br />
+  assign \u2.y  = _5_;<br />
+  assign \u2.a  = net1;<br />
+  assign \u2.b  = c;<br />
+  assign y = \u2.y ;<br />
+  assign _1_ = \u1.b ;<br />
+  assign _0_ = \u1.a ;<br />
+  assign \u1.y  = _2_;<br />
+  assign \u1.a  = a;<br />
+  assign \u1.b  = b;<br />
+  assign net1 = \u1.y ;<br />
+endmodule**<br />
+
+The commands to get the hierarchical and flattened netlists is shown below:
+
+**yosys> write_verilog -noattr multiple_modules_hier.v**
+
+8. Executing Verilog backend.
+Dumping module `\multiple_modules'.
+Dumping module `\sub_module1'.
+Dumping module `\sub_module2'.
+
+**yosys> !gvim multiple_modules.hier.v**
+
+9. Shell command: gvim multiple_modules.hier.v**
+
+**yosys> !gvim multiple_modules_hier.v**
+
+10. Shell command: gvim multiple_modules_hier.v
+
+**yosys> !gvim multiple_modules_hier.v**
+
+11. Shell command: gvim multiple_modules_hier.v
+
+**yosys> flatten**
+
+12. Executing FLATTEN pass (flatten design).
+Deleting now unused module sub_module1.
+Deleting now unused module sub_module2.
+<suppressed ~2 debug messages>
+
+**yosys> write_verilog -noattr multiple_modules_flat.v**
+
+13. Executing Verilog backend.
+Dumping module `\multiple_modules'.
+
+**yosys> !gvim multiple_modules_flat.v**
+
+14. Shell command: gvim multiple_modules_flat.v
+
+This is the synthyesized circuit for a flattened netlist. Here u1 and u2 are flattened and directly and and or gates are realized.
+
+![lab51](https://user-images.githubusercontent.com/104454253/166112988-1b02eea6-a6e8-4a7e-8eee-0772182f914f.JPG)
+
+Here is the synthesized circuit of sub_module1. We are also generating module level synthesis so that if there is a top module with multiple and same sub_modules, we can synthesize it once and can use and connect the same netlist multiple times in the top module netlist.
+
+Another reason to generate module level synthesis and then stictch them together is to avoid errors in a top module if its massive and consists of several sub modules. Generating netlist for synthesis and then stiching it together in top level becomes easier and reduces risk of output mismatch.
+
+We control this synthesis using **synth -top <module_name>** command
+
+![lab52](https://user-images.githubusercontent.com/104454253/166113791-5c245c1c-727a-4f15-aaec-9fef1b817aec.JPG)
+
+**Various Flop coding styles and optimization**
+**SKY130RTL D2SK3 L1 Why Flops and Flop coding styles part1**
+
+In this session, the discussion was about how to code various types of flops and various styles of coding a flop.
+
+**Why a Flop?**
+ In a combinational circuit, the output changes after the propagation delay of the circuit after inputs are changed. During the propagation of data, if there are different paths with different propagation delays, there might be a chance of getting a glitch at the output.<br />
+ If there are multiple combinational circuits in the design, the occurances of glitches are more thereby making the output unstable.<br />
+ To curb this drawback, we are going for flops to store the data from the cominational circuits. When a flop is used, the output of combinational circuit is stored in it and it is propagated only at the posedge or negedge of the clock so that the next combinational circuit gets a glitch free input thereby stabilising the output.
+ 
+ We use initialize signals or control pins called **set** and **reset** on a flop to initialize the flop, other wise a garbage value to sent out to the next combinational circuit. These control pins can be synchronous or asynchronous.
+ 
+ **SKY130RTL D2SK3 L2 Why Flops and Flop coding styles part2**
+ **LAB6-SKY130RTL D2SK3 L3 Lab flop synthesis simulations part1**
+ **d-flipflop with asynchronous reset**- Here the output **q** goes low whenever reset is high and will not wait for the clock's posedge, i.e irrespective of clock, the output is changed to low.
+ 
+ ![f143804e-5d1a-49d1-9b00-9227785d3e29](https://user-images.githubusercontent.com/104454253/166116145-8fbbacb1-e453-465a-9e41-f21de2337190.jpg)<br />
+ module dff_asyncres ( input clk ,  input async_reset , input d , output reg q );<br />
+always @ (posedge clk , posedge async_reset)<br />
+begin<br />
+	if(async_reset)<br />
+		q <= 1'b0;<br />
+	else	<br />
+		q <= d;<br />
+end<br />
+endmodule<br />
+
+ **d-flipflop with asynchronous set**- Here the output **q** goes high whenever set is high and will not wait for the clock's posedge, i.e irrespective of clock, the output is changed to high.
+ 
+![ecc23aa6-e840-46bd-84e3-4eb2b6db0eee](https://user-images.githubusercontent.com/104454253/166116302-08fbdab3-58b3-4ab1-b793-5de48ac86146.jpg)
+
+module dff_async_set ( input clk ,  input async_set , input d , output reg q );<br />
+always @ (posedge clk , posedge async_set)<br />
+begin<br />
+	if(async_set)<br />
+		q <= 1'b1;<br />
+	else	<br />
+		q <= d;<br />
+end<br />
+endmodu<br />le
+
+**d-flipflop with synchronous reset**- Here the output **q** goes low whenever reset is high and at the positive edge of the clock. Here the reset of the output depends on the clock.
+
+![433468fc-7853-49be-8e81-45fd23297c6c](https://user-images.githubusercontent.com/104454253/166116449-152fffef-c1f5-492b-9101-9a0d431b8a88.jpg)
+
+module dff_syncres ( input clk , input async_reset , input sync_reset , input d , output reg q );<br />
+always @ (posedge clk )<br />
+begin<br />
+	if (sync_reset)<br />
+		q <= 1'b0;<br />
+	else	<br />
+		q <= d;<br />
+end<br />
+endmodule<br />
+
+**d-flipflop with synchronous and asynchronbous reset**- Here the output **q** goes low whenever asynchronous reset is high where output doesn't depend on clock and also when synchronous reset is high and posedge of clock occurs.
+
+![3c78d01e-7f60-4e51-8150-c8b2dd414957](https://user-images.githubusercontent.com/104454253/166116820-d30a6781-ee51-4fc4-83bb-55e316f992d0.jpg)
+
+module dff_asyncres_syncres ( input clk , input async_reset , input sync_reset , input d , output reg q );<br />
+always @ (posedge clk , posedge async_reset)<br />
+begin<br />
+	if(async_reset)<br />
+		q <= 1'b0;<br />
+	else if (sync_reset)<br />
+		q <= 1'b0;<br />
+	else	<br />
+		q <= d;<br />
+end<br />
+endmodule<br />
+
+**SKY130RTL D2SK3 L3 Lab flop synthesis simulations part1**
+
+**SKY130RTL D2SK3 L5 Interesting optimisations part1**
+
+This lab session deals with some automatic and interesting optimisations of the circuits based on logic. In the below example, multiplying a number with 2 doesn't need any additional hardeware and only needs connecting the bits from **a** to **y** and grounding the LSB bit of y is enough and the same is realized by Yosys.
+
+module mul2 (input [2:0] a, output [3:0] y);<br />
+	assign y = a * 2;<br />
+endmodule<br />
+
+![8e686520-9e94-4c61-b8cf-6ac376a519c9](https://user-images.githubusercontent.com/104454253/166120664-44f5cd53-02bb-4457-bdb4-e8e02f0f64e4.jpg)
+
+![mult2](https://user-images.githubusercontent.com/104454253/166121029-b478d2bc-145a-40ad-9307-c7006fe0320a.JPG)
+
+When it comes to mulktiplying with powers of 2, it just needs shifting as shown in the below image:
+
+![1781ff88-add9-4b73-b8ec-51257e3074f2](https://user-images.githubusercontent.com/104454253/166120876-1cbc110d-2760-4ab3-9199-7aae4ba2dffb.jpg)
+
+**Netlist for the above schematic**
+
+![mult2netlist](https://user-images.githubusercontent.com/104454253/166121272-723a7aff-dc3e-455d-b623-34d90c8a6508.JPG)
+
+**SKY130RTL D2SK3 L6 Interesting optimisations part2**
+
+Special case of multiplying a with 9. The result is hown in the below image:
+
+![24c130d3-f95b-4d89-a280-4089cf9839ef](https://user-images.githubusercontent.com/104454253/166121185-a63f798f-2eb2-4510-a589-722f75424bd1.jpg)
+
+The schematic for the same is shown below:
+
+![mult9](https://user-images.githubusercontent.com/104454253/166121402-86c8ab0a-f8dc-490c-bd68-3a97ac53970d.JPG)
+
+**Netlist for the above schematic**
+
+![mult8netlist](https://user-images.githubusercontent.com/104454253/166121455-11f0dee0-cc32-4438-8797-43853aa2bc07.JPG)
+
