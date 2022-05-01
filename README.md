@@ -3,14 +3,14 @@
 # Table of contents
  - [1. Introduction](#1-Introduction)
  - [2. Day-1- Introduction to Verilog RTL design and Synthesis](#2-day-1---introduction-to-verilog-rtl-design-and-synthesis)
-    - [2.1 Various aspects of frontend design](# 21-Various-aspects-of-frontend-design)
+    - [2.1 Various aspects of frontend design](#21-Various-aspects-of-frontend-design)
        - [RTL Deisgn](#rtl-design)
        - [Test Bench](#test-bench)
 # 1. Introduction
 This report is a final submission of 5-day workshop from [VLSI Sytem Design-IAT](https://www.vlsisystemdesign.com/) on RTL design and synthesis using open source tools, in particular iVerilog, GTKWave, Yosy and Skywater 130nm Standard Cell Libraries  
 # 2. Introduction to Verilog RTL design and Synthesis
 ## 2.1 Various aspects of frontend design
-# RTL Design: In simple terms RTL design or Register Transfer Level design is a method in which we can transfer data from one register to another. In RTL design we write code for Combinational and Sequential circuits in HDL(Hardware Description Language) like Verilog or VerilogHDL which can model logical and hardware operation. RTL design can be one code or set of verilog codes. **One key note is that we need to write RTL design with optimized and synthesizable (realizable as physical gates)**.
+**RTL Design**: In simple terms RTL design or Register Transfer Level design is a method in which we can transfer data from one register to another. In RTL design we write code for Combinational and Sequential circuits in HDL(Hardware Description Language) like Verilog or VerilogHDL which can model logical and hardware operation. RTL design can be one code or set of verilog codes. **One key note is that we need to write RTL design with optimized and synthesizable (realizable as physical gates)**.
 
 Sample RTL design outline:
 **module module_name (port list);<br />
