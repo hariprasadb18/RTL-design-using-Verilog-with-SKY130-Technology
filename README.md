@@ -449,3 +449,298 @@ The schematic for the same is shown below:
 
 ![mult8netlist](https://user-images.githubusercontent.com/104454253/166121455-11f0dee0-cc32-4438-8797-43853aa2bc07.JPG)
 
+**DAY3- Combinational and sequential optmizations**
+**Introduction to optimizations**
+**SKY130RTL D3SK1 L1 Introduction to optimisations part1**
+**Combinational logic optimization**-Optimising the combinational logic circuit is squeezing the logiv to get the most optimized digital design so that the circuit finally is are and power efficient. This is achived by the synthesis tool using various techniques and gives us the most optimized circuit.
+Techniques for optimization:
+- Constant propagation which is Direct optimizxation technique
+- Boolean logic optimization using K-map or Quine McKluskey
+Here is an example for **Constant Propagation**
+
+![optimizations1](https://user-images.githubusercontent.com/104454253/166127772-9ff3dc8e-c5e2-4621-8070-d300df31667e.JPG)
+
+In the above example, if we considor the trasnsistor level circuit of output Y, it has 6 MOS trasistors and when it comes to invertor, only 2 transistors will be sufficient. This is achieved by making A as contstant and propagating the same to output.
+
+Example for **Boolean logic optimization**:
+
+Let's consider an example concurrent statement **assign y=a?(b?c:(c?a:0)):(!c)**
+
+The above expression is using a ternary operator which realizes a series of multiplexers, however, when we write the boolean expression at outputs of each mux and simplify them further using boolean reduction techniques, the outout **y** turns out be just **~(a^c)**
+
+**SKY130RTL D3SK1 L2 Introduction to optimisations part2**
+**Sequential Logic Optimization**:
+Below are the various techniques used for sequential logic optimisations:
+-Basic
+  - Sequential contant propagation
+- Advanced
+  - State optimisation
+  - Retiming
+  - Sequential Logic Cloming (Floor Plan Aware Synthesis)
+**Basic**
+**Sequential contant propagation**-Here only the first logic can be optimized as the output of flp always zero. However for the second flop, the output changes continuously, therefor it cannot be used for contant propagation.
+
+![1e34f504-64e1-411d-a668-5294c6ea78f5](https://user-images.githubusercontent.com/104454253/166128292-7faf6384-792a-4455-a847-350bb95b631f.jpg)
+
+![6ef09bec-38c3-4a13-901b-0221461c9aca](https://user-images.githubusercontent.com/104454253/166128295-40ddcdda-9b4e-4a0f-a27e-5c5bd9a8bb3e.jpg)
+
+**SKY130RTL D3SK1 L3 Introduction to optimisations part3**
+**Advanced**
+State Optimisation: This is optimisation of unused state. Using this technique we can come up with most optimised state machine.
+
+Cloning: This is done when performing PHYSICAL AWARE SYNTHESIS. Lets consider a flop A which is connected to flop B and flop C through a combination logic. If B and C are placed far from A in the flooerplan, there is a routing path delay. To avoid this, we connect A to two intermediate flops and then from these flops the output is sent to B and C thereby decreading the delay. This process is called cloning as we are generating two new flops with same functgionality as A.
+
+Retiming: Retiming is a powerful sequential optimization technique used to move registers across the combinational logic or to optimize the number of registers to improve performance via power-delay trade-off, without changing the input-output behavior of the circuit. 
+
+
+Command to optimize the circuit by yosys is **yosys> opt_clean -purge**
+
+**Example-1**
+module opt_check (input a , input b , output y);
+	assign y = a?b:0;
+endmodule
+
+**Example-2**
+module opt_check2 (input a , input b , output y);
+	assign y = a?1:b;
+endmodule
+**SKY130RTL D3SK2 L2 Lab06 Combinational Logic Optimisations part2**
+**Example-3**
+module opt_check3 (input a , input b, input c , output y);
+	assign y = a?(c?b:0):0;
+endmodule
+
+**Example-4**
+
+module opt_check4 (input a , input b , input c , output y);
+ assign y = a?(b?(a & c ):c):(!c);
+ endmodule
+ 
+**Example- 5**
+module sub_module(input a , input b , output y);
+ assign y = a & b;
+endmodule
+
+
+
+module multiple_module_opt2(input a , input b , input c , input d , output y);
+wire n1,n2,n3;
+
+sub_module U1 (.a(a) , .b(1'b0) , .y(n1));
+sub_module U2 (.a(b), .b(c) , .y(n2));
+sub_module U3 (.a(n2), .b(d) , .y(n3));
+sub_module U4 (.a(n3), .b(n1) , .y(y));
+
+
+endmodule
+
+**Example-6**
+module sub_module1(input a , input b , output y);
+ assign y = a & b;
+endmodule
+
+
+module sub_module2(input a , input b , output y);
+ assign y = a^b;
+endmodule
+
+
+module multiple_module_opt(input a , input b , input c , input d , output y);
+wire n1,n2,n3;
+
+sub_module1 U1 (.a(a) , .b(1'b1) , .y(n1));
+sub_module2 U2 (.a(n1), .b(1'b0) , .y(n2));
+sub_module2 U3 (.a(b), .b(d) , .y(n3));
+
+assign y = c | (b & n1); 
+
+
+endmodule
+
+**SKY130RTL D3SK3 L1 Lab07 Sequential Logic Optimisations part1**
+**Example-1**
+In the synthesis report, we'll see that a Dflop was inferred in this example.
+module dff_const1(input clk, input reset, output reg q);
+always @(posedge clk, posedge reset)
+begin
+	if(reset)
+		q <= 1'b0;
+	else
+		q <= 1'b1;
+end
+
+endmodule
+
+**Example-2**
+module dff_const2(input clk, input reset, output reg q);
+always @(posedge clk, posedge reset)
+begin
+	if(reset)
+		q <= 1'b1;
+	else
+		q <= 1'b1;
+end
+
+endmodule
+
+**SKY130RTL D3SK3 L2 Lab07 Sequential Logic Optimisations part2**
+**Example-3**
+
+module dff_const3(input clk, input reset, output reg q);
+reg q1;
+
+always @(posedge clk, posedge reset)
+begin
+	if(reset)
+	begin
+		q <= 1'b1;
+		q1 <= 1'b0;
+	end
+	else
+	begin
+		q1 <= 1'b1;
+		q <= q1;
+	end
+end
+
+endmodule
+
+**Example4**
+
+module dff_const4(input clk, input reset, output reg q);
+reg q1;
+
+always @(posedge clk, posedge reset)
+begin
+	if(reset)
+	begin
+		q <= 1'b1;
+		q1 <= 1'b1;
+	end
+	else
+	begin
+		q1 <= 1'b1;
+		q <= q1;
+	end
+end
+
+endmodule
+
+**Example5**
+
+module dff_const5(input clk, input reset, output reg q);
+reg q1;
+
+always @(posedge clk, posedge reset)
+begin
+	if(reset)
+	begin
+		q <= 1'b0;
+		q1 <= 1'b0;
+	end
+	else
+	begin
+		q1 <= 1'b1;
+		q <= q1;
+	end
+end
+
+endmodule
+
+**SKY130RTL D3SK4 L1 Seq optimisation unused outputs part1**
+**Example1**
+
+module counter_opt (input clk , input reset , output q);
+reg [2:0] count;
+assign q = count[0];
+
+always @(posedge clk ,posedge reset)
+begin
+	if(reset)
+		count <= 3'b000;
+	else
+		count <= count + 1;
+end
+
+endmodule
+
+**SKY130RTL D3SK4 L2 Seq optimisation unused outputs part2**
+
+Updated counter logic- 
+
+All the other blocks in synthesizer are for incrementing the counter but the output is only from the three input NOR gate.
+
+module counter_opt (input clk , input reset , output q);
+reg [2:0] count;
+assign q = {count[2:0]==3'b100};
+
+always @(posedge clk ,posedge reset)
+begin
+	if(reset)
+		count <= 3'b000;
+	else
+		count <= count + 1;
+end
+
+endmodule
+
+**DAY4-GLS, blocking vs non-blocking and Synthesis-Simulation mismatch**
+
+**GLS, Synthesis-Simulation mismatch and Blocking/Non-blocking statements**
+**SKY130RTL D4SK1 L1 GLSConceptsAndFlowUsingIverilog**
+
+To avoid the synthesis and simulation mismatch. it is very important to check the behavpior of the circuit first and then match it with the expected output seen in simulation and make sure there are no synthesis and simulation mismatches. This is why we use GLS.
+
+**SKY130RTL D4SK2 L1 Lab GLS Synth Sim Mismatch part1**
+
+module ternary_operator_mux (input i0 , input i1 , input sel , output y);
+	assign y = sel?i1:i0;
+	endmodule
+	
+**SKY130RTL D4SK2 L2 Lab GLS Synth Sim Mismatch part2**
+module bad_mux (input i0 , input i1 , input sel , output reg y);
+always @ (sel)
+begin
+	if(sel)
+		y <= i1;
+	else 
+		y <= i0;
+end
+endmodule
+
+**SKY130RTL D4SK3 L1 Lab Synth sim mismatch blocking statement part1**
+
+Here the output is depending on the past value of x which is dependednt on a and b and it appears like a flop.
+module blocking_caveat (input a , input b , input  c, output reg d); 
+reg x;
+always @ (*)
+begin
+	d = x & c;
+	x = a | b;
+end
+endmodule
+
+**SKY130RTL D4SK3 L2 Lab Synth sim mismatch blocking statement part2**
+
+Here the netlist is generated and the respective gtkwave is generated
+
+**DAY5- Optimization in synthesis**
+
+**If Case constructs**
+**SKY130RTL D5SK1 L1 IF CASE Constructs part1**
+if is mainly used to create priority logic
+
+syntax
+nested if elseif syntax and tell about priorities
+Dangers with IF
+**SKY130RTL D5SK1 L2 IF CASE Constructs part2**
+continuation
+Case construct and dangers of case construct
+
+**SKY130RTL D5SK1 L3 IF CASE Constructs part3**
+caveat 2 of case
+
+comparison btwn if, elseif, elseif, else and case
+
+**SKY130RTL D5SK2 L1 Lab Incomplete IF part1**
+
