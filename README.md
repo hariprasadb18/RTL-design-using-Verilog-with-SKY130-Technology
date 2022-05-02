@@ -11,9 +11,9 @@
  - [3. DAY2-Timing libs, hierarchical, flat synthesis, efficient flop coding styles](#3.-DAY2-Timing-libs,-hierarchical,-flat-synthesis,-efficient-flop-coding-styles)
     - [3.1 Introduction to timing .libs](#31-Introduction-to-timing-.libs)
         - [3.1.1 LAB- Introduction to dot Lib](#311-LAB--Introduction-to-dot-Lib)
-    - [3.2 LAB Hierarchical synthesis and flat synthesis](#32-LAB-Hierarchical-synthesis-and-flat-synthesis)
+    - [3.2 LAB- Hierarchical synthesis and flat synthesis](#32-LAB-Hierarchical-synthesis-and-flat-synthesis)
     - [3.3 Various Flop coding styles and optimization](#33-Various-Flop-coding-styles-and-optimization)
-         - [3.3.1 Lab flop synthesis simulations](#331-Lab-flop-synthesis-simulations)
+         - [3.3.1 Lab- flop synthesis simulations](#331-Lab-flop-synthesis-simulations)
          - [3.3.2 Interesting optimisations](#332-Interesting-optimisations)
  - [4. Day3- Combinational and sequential optmizations](#4.-Day3--Combinational-and-sequential-optmizations)
     - [4.1 Combinational logic optimization with examples](#41-Combinational-logic-optimization-with-examples)
@@ -25,15 +25,15 @@
     - [5.1 GLS, Synthesis-Simulation mismatch and Blocking/Non-blocking statements](#5.1-GLS,-Synthesis-Simulation-mismatch-and-Blocking/Non-blocking-statements)
         - [5.1.1 GLS Concepts And Flow Using Iverilog](#511-GLS-Concepts-And-Flow-Using-Iverilog)
     - [5.2 Lab- GLS Synth Sim Mismatch](#52-Lab--GLS-Synth-Sim-Mismatch)
-    - [5.3 Lab Synthesis simulation mismatch blocking statement](#5.3-Lab-Synthesis-simulation-mismatch-blocking-statement)
+    - [5.3 Lab- Synthesis simulation mismatch blocking statement](#5.3-Lab--Synthesis-simulation-mismatch-blocking-statement)
  - [6. DAY5- if, case, for loop and for generate](#6.-DAY5--if,-case,-for-loop-and-for-generate)
     - [6.1 If Case constructs](#61-If-Case-constructs)
        -[6.1.1 If construct](#611-If-construct)
        -[6.1.2 Case construct](##612-Case-construct)
-    - [6.2 Lab Incomplete IF](#62-Lab-Incomplete-IF)
-    - [6.3 Lab incomplete overlapping Case](#63-Lab-incomplete-overlapping-Case)
+    - [6.2 Lab- Incomplete IF](#62-Lab--Incomplete-IF)
+    - [6.3 Lab- incomplete overlapping Case](#63-Lab--incomplete-overlapping-Case)
     - [6.4 For Loop and For Generate](#64-For-Loop-and-For-Generate)
-    - [6.5 Lab For and For Generate](#65-Lab-For-and-For-Generate)
+    - [6.5 Lab- For and For Generate](#65-Lab--For-and-For-Generate)
 # 1. Introduction
 This report is a final submission of 5-day workshop from [VLSI Sytem Design-IAT](https://www.vlsisystemdesign.com/) on RTL design and synthesis using open source tools, in particular iVerilog, GTKWave, Yosy and Skywater 130nm Standard Cell Libraries  
 # 2. Introduction to Verilog RTL design and Synthesis
@@ -893,7 +893,7 @@ To avoid the synthesis and simulation mismatch. it is very important to check th
 
 ![gtkgood_muxnetlist](https://user-images.githubusercontent.com/104454253/166206120-d45f4a7e-9f9a-4392-ba28-dcdd45777ded.JPG)
 
-## 5.3 Lab Synthesis simulation mismatch blocking statement
+## 5.3 Lab- Synthesis simulation mismatch blocking statement
 
 Here the output is depending on the past value of x which is dependednt on a and b and it appears like a flop.
 
@@ -994,7 +994,7 @@ comparison btwn if, elseif, elseif, else and case
 
 ![synthesisincomp_if2](https://user-images.githubusercontent.com/104454253/166212941-6ca8d979-1e4b-4ae1-b5f2-a74a229f5629.JPG)
 
-## 6.3 Lab incomplete overlapping Case
+## 6.3 Lab- incomplete overlapping Case
 
 **Example-1**
 
@@ -1108,7 +1108,7 @@ FOR Generate
 **SKY130RTL D5SK4 L2 For Loop and For Generate part3**
 For Generate example
 
-## 6.5 Lab For and For Generate
+## 6.5 Lab- For and For Generate
 simulation, gtkwave, synthesis, gtkwave of synthesis.
 
 **Example-1- Mux using generate**
