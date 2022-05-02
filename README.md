@@ -11,10 +11,10 @@
  - [3. DAY2-Timing libs, hierarchical, flat synthesis, efficient flop coding styles](#3.-DAY2-Timing-libs,-hierarchical,-flat-synthesis,-efficient-flop-coding-styles)
     - [3.1 Introduction to timing .libs](#31-Introduction-to-timing-.libs)
         - [3.1.1 LAB- Introduction to dot Lib](#311-LAB--Introduction-to-dot-Lib)
-        - [3.1.2 LAB Hierarchical synthesis and flat synthesis](#312-LAB-Hierarchical-synthesis-and-flat-synthesis)
-        - [3.1.3 Various Flop coding styles and optimization](#313-Various-Flop-coding-styles-and-optimization)
-            - [3.1.3.1 Lab flop synthesis simulations](#3131-Lab-flop-synthesis-simulations)
-            - [3.1.3.2 Interesting optimisations](#3132-Interesting-optimisations)
+    - [3.2 LAB Hierarchical synthesis and flat synthesis](#32-LAB-Hierarchical-synthesis-and-flat-synthesis)
+    - [3.3 Various Flop coding styles and optimization](#33-Various-Flop-coding-styles-and-optimization)
+            - [3.3.1 Lab flop synthesis simulations](#331-Lab-flop-synthesis-simulations)
+            - [3.3.2 Interesting optimisations](#332-Interesting-optimisations)
  - [4. Day3- Combinational and sequential optmizations](#4.-Day3--Combinational-and-sequential-optmizations)
     - [4.1 Combinational logic optimization with examples](#41-Combinational-logic-optimization-with-examples)
     - [4.2 Sequential logic optimization with examples](#42-Sequential-logic-optimization-with-examples)
@@ -235,7 +235,7 @@ Below image is the delay order for the different flavor of gates.
 
 ![delay_libraries](https://user-images.githubusercontent.com/104454253/166187423-d21465e1-abc3-4ad0-a534-60f8e706ab6f.JPG)
 
-### 3.1.2 LAB Hierarchical synthesis and flat synthesis
+### 3.2 LAB- Hierarchical synthesis and flat synthesis
 
 **multiple_module**
 	module sub_module2 (input a, input b, output y);<br />
@@ -386,7 +386,7 @@ We control this synthesis using **synth -top <module_name>** command
 
 ![lab52](https://user-images.githubusercontent.com/104454253/166113791-5c245c1c-727a-4f15-aaec-9fef1b817aec.JPG)
 
-### 3.1.3 Various Flop coding styles and optimization
+### 3.3 Various Flop coding styles and optimization
 
 **Why Flops and Flop coding styles part1**
 
@@ -399,7 +399,7 @@ To curb this drawback, we are going for flops to store the data from the cominat
  
  We use initialize signals or control pins called **set** and **reset** on a flop to initialize the flop, other wise a garbage value to sent out to the next combinational circuit. These control pins can be synchronous or asynchronous.
  
-#### 3.1.3.1 Lab flop synthesis simulations
+#### 3.3.1 Lab- flop synthesis simulations
  
  **d-flipflop with asynchronous reset**- Here the output **q** goes low whenever reset is high and will not wait for the clock's posedge, i.e irrespective of clock, the output is changed to low.
  
@@ -492,7 +492,7 @@ To curb this drawback, we are going for flops to store the data from the cominat
 ![dffasyncsynceressyhtesis](https://user-images.githubusercontent.com/104454253/166189860-8b65cdee-0ae1-409b-807c-d6bf7c4d30d8.JPG)
 
 
-#### 3.1.3.2 Interesting optimisations
+#### 3.3.2 Interesting optimisations
 
 This lab session deals with some automatic and interesting optimisations of the circuits based on logic. In the below example, multiplying a number with 2 doesn't need any additional hardeware and only needs connecting the bits from **a** to **y** and grounding the LSB bit of y is enough and the same is realized by Yosys.
 
