@@ -9,7 +9,7 @@
     - [2.3 Introduction to Yosys synthesizer](#23-Introduction-to-Yosys-synthesizer)
         - [2.3.1 Labs on Yosys introduction](#231-Labs-on-Yosys-introduction)
  - [3. DAY2-Timing libs, hierarchical, flat synthesis, efficient flop coding styles](#3-DAY2-Timing-libs-hierarchical-flat-synthesis-efficient-flop-coding-styles)
-    - [3.1 Introduction to timing .libs](#31-Introduction-to-timing-.libs)
+    - [3.1 Introduction to timing .libs](#31-Introduction-to-timing-libs)
         - [3.1.1 LAB- Introduction to dot Lib](#311-LAB--Introduction-to-dot-Lib)
     - [3.2 LAB- Hierarchical synthesis and flat synthesis](#32-LAB-Hierarchical-synthesis-and-flat-synthesis)
     - [3.3 Various Flop coding styles and optimization](#33-Various-Flop-coding-styles-and-optimization)
@@ -22,13 +22,13 @@
         - [4.2.2 Advanced](#422-Advanced)
         - [4.2.3 Sequential optimisation of unused outputs](#423-Sequential-optimisation-of-unused-outputs)
  - [5. DAY4- GLS, blocking vs non-blocking and Synthesis-Simulation mismatch](#5-DAY4--GLS-blocking-vs-non-blocking-and-Synthesis-Simulation-mismatch)
-    - [5.1 GLS, Synthesis-Simulation mismatch and Blocking/Non-blocking statements](#5.1-GLS,-Synthesis-Simulation-mismatch-and-Blocking/Non-blocking-statements)
+    - [5.1 GLS, Synthesis-Simulation mismatch and Blocking, Non-blocking statements](#51-GLS-Synthesis-Simulation-mismatch-and-Blocking-Non-blocking-statements)
         - [5.1.1 GLS Concepts And Flow Using Iverilog](#511-GLS-Concepts-And-Flow-Using-Iverilog)
         - [5.1.2 Synthesis Simulation Mismatch](#512-Synthesis-Simulation-Mismatch)
     - [5.2 Lab- GLS Synth Sim Mismatch](#52-Lab--GLS-Synth-Sim-Mismatch)
     - [5.3 Lab- Synthesis simulation mismatch blocking statement](#53-Lab--Synthesis-simulation-mismatch-blocking-statement)
- - [6. DAY5- if, case, for loop and for generate](#6-DAY5--if,-case,-for-loop-and-for-generate)
-    - [6.1 If Case constructs](#61-If-Case-constructs)
+ - [6. DAY5- if, case, for loop and for generate](#6-DAY5--if-case-for-loop-and-for-generate)
+    - [6.1 If and Case constructs](#61-If-and-Case-constructs)
        - [6.1.1 If construct](#611-If-construct)
        - [6.1.2 Case construct](#612-Case-construct)
     - [6.2 Lab- Incomplete IF](#62-Lab--Incomplete-IF)
@@ -238,7 +238,7 @@ Below image is the delay order for the different flavor of gates.
 
 ![delay_libraries](https://user-images.githubusercontent.com/104454253/166187423-d21465e1-abc3-4ad0-a534-60f8e706ab6f.JPG)
 
-### 3.2 LAB- Hierarchical synthesis and flat synthesis
+## 3.2 LAB- Hierarchical synthesis and flat synthesis
 
 **multiple_module**<br />
 
@@ -404,7 +404,7 @@ To curb this drawback, we are going for flops to store the data from the cominat
  
  We use initialize signals or control pins called **set** and **reset** on a flop to initialize the flop, other wise a garbage value to sent out to the next combinational circuit. These control pins can be synchronous or asynchronous.
  
-#### 3.3.1 Lab- flop synthesis simulations
+### 3.3.1 Lab- flop synthesis simulations
  
  **d-flipflop with asynchronous reset**- Here the output **q** goes low whenever reset is high and will not wait for the clock's posedge, i.e irrespective of clock, the output is changed to low.
  
@@ -497,7 +497,7 @@ To curb this drawback, we are going for flops to store the data from the cominat
 ![dffasyncsynceressyhtesis](https://user-images.githubusercontent.com/104454253/166189860-8b65cdee-0ae1-409b-807c-d6bf7c4d30d8.JPG)
 
 
-#### 3.3.2 Interesting optimisations
+### 3.3.2 Interesting optimisations
 
 This lab session deals with some automatic and interesting optimisations of the circuits based on logic. In the below example, multiplying a number with 2 doesn't need any additional hardeware and only needs connecting the bits from **a** to **y** and grounding the LSB bit of y is enough and the same is realized by Yosys.
 
