@@ -34,6 +34,7 @@
     - [6.3 Lab- incomplete overlapping Case](#63-Lab--incomplete-overlapping-Case)
     - [6.4 For Loop and For Generate](#64-For-Loop-and-For-Generate)
     - [6.5 Lab- For and For Generate](#65-Lab--For-and-For-Generate)
+ - [7. Word of Thanks](#7.-Word-of-Thanks)
 # 1. Introduction
 This report is a final submission of 5-day workshop from [VLSI Sytem Design-IAT](https://www.vlsisystemdesign.com/) on RTL design and synthesis using open source tools, in particular iVerilog, GTKWave, Yosy and Skywater 130nm Standard Cell Libraries  
 # 2. Introduction to Verilog RTL design and Synthesis
@@ -1228,3 +1229,7 @@ simulation, gtkwave, synthesis, gtkwave of synthesis.
 **Netlist Simulation**
 
 ![sim_rca_netlist](https://user-images.githubusercontent.com/104454253/166215690-7afb3dc5-9890-42b7-acd7-cc31b336f6e3.JPG)
+
+# 7. Word of Thanks
+
+I would like to thanks the team of VLSI System Design and Chipspirit for the collaborative workshop. The sessions are well structure and I'm looking forward for future events. My special thanks to Mr. Kunal and Mr. Shon Taware for helping us out with the flow and technical issues. I wish VSD team and Chipspirit team all the very best for your **MAKE IN INDIA** vision.
