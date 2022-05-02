@@ -27,7 +27,7 @@
         - [5.1.2 Synthesis Simulation Mismatch](#512-Synthesis-Simulation-Mismatch)
     - [5.2 Lab- GLS Synth Sim Mismatch](#52-Lab--GLS-Synth-Sim-Mismatch)
     - [5.3 Lab- Synthesis simulation mismatch blocking statement](#53-Lab--Synthesis-simulation-mismatch-blocking-statement)
- - [6. DAY5- if, case, for loop and for generate](#6-DAY5--if,-case,-for-loop-and-for-generate)
+ - [6. DAY5- if, case, for loop and for generate](#6-DAY5--if-case-for-loop-and-for-generate)
     - [6.1 If and Case constructs](#61-If-and-Case-constructs)
        - [6.1.1 If construct](#611-If-construct)
        - [6.1.2 Case construct](#612-Case-construct)
