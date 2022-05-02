@@ -557,6 +557,8 @@ Command to optimize the circuit by yosys is **yosys> opt_clean -purge**
 
 **Example-1**
 
+![62695d29-f76d-426c-ab99-af6fbb2abda0](https://user-images.githubusercontent.com/104454253/166292324-f3243d68-55c1-4829-a836-8177edc79613.jpg)
+
 	module opt_check (input a , input b , output y);
 		assign y = a?b:0;
 	endmodule
@@ -567,6 +569,8 @@ Command to optimize the circuit by yosys is **yosys> opt_clean -purge**
 
 **Example-2**
 
+![e748028c-ea3d-4d58-8f5a-71a8248e4dd5](https://user-images.githubusercontent.com/104454253/166292286-6b3fd349-23af-463e-988e-863038a542d8.jpg)
+
 	module opt_check2 (input a , input b , output y);
 		assign y = a?1:b;
 	endmodule
@@ -574,6 +578,8 @@ Command to optimize the circuit by yosys is **yosys> opt_clean -purge**
 ![opt_check2](https://user-images.githubusercontent.com/104454253/166197032-9cfd996e-0351-4c78-ab88-544977174f8b.JPG)
 
 **Example-3**
+
+![bfcc0b60-1b3e-4f45-a5cf-88b33f4e7dcf](https://user-images.githubusercontent.com/104454253/166292243-7fa03ef2-bce9-418f-8830-e9587d459aef.jpg)
 
 	module opt_check3 (input a , input b, input c , output y);
 		assign y = a?(c?b:0):0;
@@ -583,6 +589,8 @@ Command to optimize the circuit by yosys is **yosys> opt_clean -purge**
 
 **Example-4**
 
+![a42e5eb3-2966-4fb0-bad3-6c6a6fa12798](https://user-images.githubusercontent.com/104454253/166292378-3ebdc824-de41-4385-9f7f-1654e71c0ff0.jpg)
+
 	module opt_check4 (input a , input b , input c , output y);
 		assign y = a?(b?(a & c ):c):(!c);
 	endmodule
@@ -590,6 +598,8 @@ Command to optimize the circuit by yosys is **yosys> opt_clean -purge**
  ![opt_check4](https://user-images.githubusercontent.com/104454253/166197170-bbf59d4e-0457-48ce-8ad9-6d36e0c4ffbb.JPG)
 
 **Example- 5**
+
+![7c0faa7e-cffc-44f3-988a-17e2e4857675](https://user-images.githubusercontent.com/104454253/166292469-dea41b7c-40ed-4b5b-b9f7-30ad3de0bad2.jpg)
 
 	module sub_module(input a , input b , output y);
 		assign y = a & b;
@@ -606,6 +616,8 @@ Command to optimize the circuit by yosys is **yosys> opt_clean -purge**
 ![multiplemoduleopt2](https://user-images.githubusercontent.com/104454253/166197277-56a666ff-eae9-45e8-bff6-afcab3e8e583.JPG)
 
 **Example-6**
+
+![89cc6397-defe-4bba-a767-6e28c99ba0de](https://user-images.githubusercontent.com/104454253/166292486-d2041066-ab26-4010-b253-93c510c51674.jpg)
 
 		module sub_module1(input a , input b , output y);
 		 assign y = a & b;
@@ -664,6 +676,8 @@ Here flop will be inferred as the output is not constant. <br />
 		end
 	endmodule
 
+![bdf6fb4e-ee93-4f76-bbef-e25a8fe8aeda](https://user-images.githubusercontent.com/104454253/166292590-1d76f35e-f83f-486e-a154-1e0a7a1441fb.jpg)
+
 **Simulation**
 
 ![optimdff_const1](https://user-images.githubusercontent.com/104454253/166199133-1d0a9a00-eeb4-46ab-9115-25383ec1bcbd.JPG)
@@ -687,6 +701,8 @@ Here flop will not be inferred as the output is always high. <br />
 				q <= 1'b1;
 		end
 	endmodule
+
+![7a01ae65-de9b-4e33-812e-206eb3c2733f](https://user-images.githubusercontent.com/104454253/166292615-3af99c64-305e-434a-b21b-907a30f83ab0.jpg)
 
 **Simulation**
 
@@ -717,6 +733,7 @@ Here flop will not be inferred as the output is always high. <br />
 			end
 		end
 		endmodule
+
 
 **Simulation***
 
@@ -796,6 +813,8 @@ Here flop will not be inferred as the output is always high. <br />
 		end
 		endmodule
 		
+![2f8f6e43-102f-4fd7-aad2-585b0a55098d](https://user-images.githubusercontent.com/104454253/166292769-44c0406c-4fbb-4a3e-9345-2b308783a7de.jpg)
+
 **Synthesis**
 
 ![synthcounter_opt](https://user-images.githubusercontent.com/104454253/166201168-cadde883-f4dd-4de1-9e09-00dd5d06647c.JPG)
@@ -813,6 +832,8 @@ Here flop will not be inferred as the output is always high. <br />
 			count <= count + 1;
 		end
 	endmodule
+
+![0e890967-cf43-4be0-8f53-968fe98c7f55](https://user-images.githubusercontent.com/104454253/166292799-97d7ee9c-1000-4dcc-935c-a5ae56a74f8e.jpg)
 
 **Synthesis**
 
