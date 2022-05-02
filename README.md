@@ -24,6 +24,7 @@
  - [5. DAY4- GLS, blocking vs non-blocking and Synthesis-Simulation mismatch](#5.-DAY4--GLS,-blocking-vs-non-blocking-and-Synthesis-Simulation-mismatch)
     - [5.1 GLS, Synthesis-Simulation mismatch and Blocking/Non-blocking statements](#5.1-GLS,-Synthesis-Simulation-mismatch-and-Blocking/Non-blocking-statements)
         - [5.1.1 GLS Concepts And Flow Using Iverilog](#511-GLS-Concepts-And-Flow-Using-Iverilog)
+        - [5.1.2 Synthesis Simulation Mismatch](#512-Synthesis-Simulation-Mismatch)
     - [5.2 Lab- GLS Synth Sim Mismatch](#52-Lab--GLS-Synth-Sim-Mismatch)
     - [5.3 Lab- Synthesis simulation mismatch blocking statement](#5.3-Lab--Synthesis-simulation-mismatch-blocking-statement)
  - [6. DAY5- if, case, for loop and for generate](#6.-DAY5--if,-case,-for-loop-and-for-generate)
@@ -822,8 +823,35 @@ All the other blocks in synthesizer are for incrementing the counter but the out
 
 # 5.1 GLS, Synthesis-Simulation mismatch and Blocking/Non-blocking statements
 ### 5.1.1 GLS Concepts And Flow Using Iverilog
-As the synthesizer doen't look for sensitivity list and it looks only for the statements in procedural block, it infers correct circuit  and if we simulate the netlist code, there will be a synthesis simulation mismatch
-To avoid the synthesis and simulation mismatch. it is very important to check the behavpior of the circuit first and then match it with the expected output seen in simulation and make sure there are no synthesis and simulation mismatches. This is why we use GLS.
+
+**What is GLS- Gate Level Simulation?**:<br />
+GLS is generating the simulation output by running test bench with netlist file generated from synthesis as design under test. Netlist is logically same as RTL code, therefore, same test bench can be used for it.
+
+**Why GLS?**:<br />
+We perform this to verify logical correctness of the design after synthesizing it. Also ensuring the timing of the design is met.
+
+Below picture gives an insight of the procedure. Here while using iverilog, we also include gate level verilog models to generate GLS simulation.
+
+![Screenshot (49)](https://user-images.githubusercontent.com/104454253/166256679-1ac9167a-1358-4c60-bbdb-0f6423f0faa3.png)
+
+### 5.1.2 Synthesis Simulation Mismatch
+
+There are three main reasons for Synthesis Simulation Mismatch:<br />
+- Missing sensitivity list in always block
+- Blocking vs Non-Blocking Assignments
+- Non standard Verilog coding
+
+**Missing sensitivity list in always block:**<br />
+
+If the consider - [Example-2](Example-2), we can see the only **sel** is mentioned in the sensitivity list. During the simulation, the waveforms will resemble a latched output but the simulation of netlist will not infer this as the synthesizer will only look at the statements with in the procedural block and not the sensitivity list.
+
+As the synthesizer doen't look for sensitivity list and it looks only for the statements in procedural block, it infers correct  circuit  and if we simulate the netlist code, there will be a synthesis simulation mismatch.
+
+To avoid the synthesis and simulation mismatch. It is very important to check the behaviour of the circuit first and then match it with the expected output seen in simulation and make sure there are no synthesis and simulation mismatches. This is why we use GLS.
+
+**Blocking vs Non-Blocking Assignments**:
+
+Blocking statements execute the statemetns in the order they are written inside the always block. Non-Blocking statements execute all the RHS and once always block is entered, the values are assigned to LHS. This will give mismatch as sometimes, improper use of blocking statements can create latches. Please click here to go to example - [Example](Example)
 
 ### 5.2 Lab- GLS Synthesis Simulation Mismatch
 
@@ -845,7 +873,7 @@ To avoid the synthesis and simulation mismatch. it is very important to check th
 
 ![simGLSternary_mux](https://user-images.githubusercontent.com/104454253/166204813-8022428f-9848-4bf2-9c22-9dc730b1305b.JPG)
 
-**Example-2**
+# Example-2
 
 	module bad_mux (input i0 , input i1 , input sel , output reg y);
 		always @ (sel)
@@ -865,10 +893,13 @@ To avoid the synthesis and simulation mismatch. it is very important to check th
 
 ![synthbad_mux](https://user-images.githubusercontent.com/104454253/166205989-ebd33255-d75a-4f1e-a126-bd0da6ea3c0f.JPG)
 
-
 **Netlist Simulation**
 
 ![simbadmuxnetlist](https://user-images.githubusercontent.com/104454253/166204853-14865a7a-2b9a-4af0-b552-4a1a647ad56c.JPG)
+
+**MISMATCH**<br />
+
+![Capture](https://user-images.githubusercontent.com/104454253/166259062-c3cb7fb2-e28a-4e12-b2d6-83812c5f2582.JPG)
 
 **Example-3**
 
@@ -898,7 +929,7 @@ To avoid the synthesis and simulation mismatch. it is very important to check th
 
 Here the output is depending on the past value of x which is dependednt on a and b and it appears like a flop.
 
-**Example**
+# Example
 
 	module blocking_caveat (input a , input b , input  c, output reg d); 
 	reg x;
@@ -920,6 +951,10 @@ Here the output is depending on the past value of x which is dependednt on a and
 **Netlist Simulation**
 
 ![gtkwaveblocking_caveat_netlist](https://user-images.githubusercontent.com/104454253/166208291-d7e20448-3617-4001-8f31-f9f91cc0cb95.JPG)
+
+**MISMATCH**
+
+![Capture2](https://user-images.githubusercontent.com/104454253/166260812-1832a4ba-8f95-4de3-8129-6b6c39ed17ce.JPG)
 
 # 6. DAY5- if, case, for loop and for generate
 
@@ -945,18 +980,39 @@ The construct **if** is mainly used to create priority logic. In a nested if els
 	.
 	.
 	
-Dangers with IF
-**SKY130RTL D5SK1 L2 IF CASE Constructs part2**
-continuation
-Case construct and dangers of case construct
+**Dangers with IF**:
 
-**SKY130RTL D5SK1 L3 IF CASE Constructs part3**
-caveat 2 of case
+If use a bad coding style i.e, using incomplete if else constructs will infer a latch. We definetly don't require an unwanted latch in a combinational circuit.
+When an incomplete construct is used, if all the conditions are failed, the input is latched to the output and hence we don't get desired output unless we need a latch.
 
-comparison btwn if, elseif, elseif, else and case
+This can be shown in below example:
+
+![0ed60c6c-b272-4bc6-939b-df13f76fc063](https://user-images.githubusercontent.com/104454253/166262011-21800dd6-0427-4558-a75e-6bf928117bba.jpg)
+
+**Case construct and dangers of case construct:**<br />
+
+**Syntax**
+
+case(statement)
+  case1: begin
+         --------
+	 --------
+	 end
+  case2: begin
+         --------
+	 --------
+	 end
+  default:
+ endcase
+ 
+ In case construct, the execution checks for all the case statements and whichever satisfies the statement, that particular statement is executed.If there is no match, the default statement is executed. But here unlike if construct, the execution doesn't stop once statement is satisfied, but it continues further.
+ 
+**Caveats in Case**<br />
+Caveats in case occur due to two reasons. One is **incomplete case statements** and the other is **partial assignments in case statements.**
 
 ## 6.2 Lab Incomplete IF
 
+This incomplete if construct forms a connection between i0 and output y i.e, D-latch with input as i1 and i0 will be the enable for it.<br />
 **Example-1**
 
 	module incomp_if (input i0 , input i1 , input i2 , output reg y);
@@ -975,7 +1031,8 @@ comparison btwn if, elseif, elseif, else and case
 
 ![sythesisincomp_if](https://user-images.githubusercontent.com/104454253/166212767-d60021fa-9102-4edb-83c7-cd87b3439f24.JPG)
 
-**Example-2**
+**Example-2**<br />
+The below code is equivalent to two 2:1 mux with i0 and i2 as select lines with i1 and i3 as inputs respectively. Here as well, the output is connected back to input in the form of a latch with an enable input of **OR** of i0 and i2.
 
 	module incomp_if2 (input i0 , input i1 , input i2 , input i3, output reg y);
 		always @ (*)
@@ -997,23 +1054,17 @@ comparison btwn if, elseif, elseif, else and case
 
 ## 6.3 Lab- incomplete overlapping Case
 
-**Example-1**
+**Example-1**<br />
+Thie is an example of incomplete case where other two combinations 10 and 11 were not included. This is infer a latch for the multiplexer and connect i2 and i3 with the output.
 
-	module partial_case_assign (input i0 , input i1 , input i2 , input [1:0] sel, output reg y , output reg x);
-	always @ (*)
-	begin
+	module incomp_case (input i0 , input i1 , input i2 , input [1:0] sel, output reg y);
+		always @ (*)
+		begin
 		case(sel)
-			2'b00 : begin
-				y = i0;
-				x = i2;
-				end
+			2'b00 : y = i0;
 			2'b01 : y = i1;
-			default : begin
-		         	  x = i1;
-				   y = i2;
-				 end
 		endcase
-	end
+		end
 	endmodule
 
 **Simulator**
@@ -1025,6 +1076,8 @@ comparison btwn if, elseif, elseif, else and case
 ![synthesisincom_Case](https://user-images.githubusercontent.com/104454253/166213609-c8221a76-2bc7-4ef6-b519-e76d5ee7211a.JPG)
 
 **Example-2- Complete case**
+
+This is the case of complete case statements as the default case is given. If the actual case statements don't execute, the compiler directly executes the default statements and a latch is not inferred.
 
 	module comp_case (input i0 , input i1 , input i2 , input [1:0] sel, output reg y);
 	always @ (*)
@@ -1045,7 +1098,9 @@ comparison btwn if, elseif, elseif, else and case
 
 ![synthesiscomp_case](https://user-images.githubusercontent.com/104454253/166213716-d37ad0f3-f111-4bd5-bf73-c77558a48909.JPG)
 
-**Example-3**
+**Example-3**<br />
+In the below example, y is present in all the case statements and it had particular outut for all cases. There no latch is inferred in case of y. 
+When it comes to x, it is not assigned for the input 01, therefore a latch is inferred here.
 
 	module partial_case_assign (input i0 , input i1 , input i2 , input [1:0] sel, output reg y , output reg x);
 	always @ (*)
@@ -1101,20 +1156,24 @@ comparison btwn if, elseif, elseif, else and case
 
 ## 6.4 For Loop and For Generate
 
-Generate for loop is used for instantaing hardware
+**For Loop**<br />
+- For look is used in always block
+- It is used for excecuting expressions alone
 
-**SKY130RTL D5SK4 L2 For Loop and For Generate part2**
-For loop for mux and demux
-FOR Generate
-**SKY130RTL D5SK4 L2 For Loop and For Generate part3**
-For Generate example
+**Generate For loop**<br />
+- Generate for loop is used for instantaing hardware
+- It should be used only outside always block
+
+For loop can be used to generate larger circuits like 256:1 multiplexer or 1-256 demultiplexer where the coding style of smaller mux is not feesible and can have human errors since we would need to include huge number of combinations.
+
+FOR Generate can be used to instantiate any number of sub modules with in a top module. For example, if we need a 32 bit ripple carry adder, instead of instantiating 32 full adders, we can write a generate for loop and connect the full adders appropriately.
 
 ## 6.5 Lab- For and For Generate
-simulation, gtkwave, synthesis, gtkwave of synthesis.
 
-**Example-1- Mux using generate**
+**Example-1- Mux using generate**<br />
+Here for loop is used to design a 4:1 mux. This can also be written using case or if else block, however, for a large size mux, only for loop model is feasible.
 
-	module mux_generate (input i0 , input i1, input i2 , input i3 , input [1:0] sel  , output reg y);
+	module mux_for (input i0 , input i1, input i2 , input i3 , input [1:0] sel  , output reg y);
 		wire [3:0] i_int;
 		assign i_int = {i3,i2,i1,i0};
 		integer k;
@@ -1173,6 +1232,8 @@ simulation, gtkwave, synthesis, gtkwave of synthesis.
 
 **Example-3-Demux using Generate**
 
+The code in above example is big and also there is a chance of human error wile writing the code. However, using for loop as shown below, this drawback can be elimiated to a great extent.
+
 	module demux_generate (output o0 , output o1, output o2 , output o3, output o4, output o5, output o6 , output o7 , input [2:0] sel  , input i);
 	reg [7:0]y_int;
 	assign {o7,o6,o5,o4,o3,o2,o1,o0} = y_int;
@@ -1196,6 +1257,8 @@ simulation, gtkwave, synthesis, gtkwave of synthesis.
 ![synthdemux_generate](https://user-images.githubusercontent.com/104454253/166215477-0cb58974-29e0-42ae-adf9-c96e1addefb5.JPG)
 
 **Example-4- Ripple carry adder using fulladder**
+
+In this Ripple carry adder example, unlike instantiating fulladder for 8 times, generate for loop is used to instantiate the fulladder for 7 times and only for first full adder, it is instantiated seperately. Using the same code, just by changing bus sizes and condition of for loop, we can design any required size of ripple carry adder.
 
 	module rca (input [7:0] num1 , input [7:0] num2 , output [8:0] sum);
 	wire [7:0] int_sum;
