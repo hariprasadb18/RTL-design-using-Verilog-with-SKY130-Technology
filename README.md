@@ -994,17 +994,17 @@ This can be shown in below example:
 
 **Syntax**
 
-case(statement)
-  case1: begin
-         --------
-	 --------
-	 end
-  case2: begin
-         --------
-	 --------
-	 end
-  default:
- endcase
+	case(statement)
+	  case1: begin
+  	       --------
+		 --------
+		 end
+ 	 case2: begin
+    	     --------
+		 --------
+		 end
+ 	 default:
+	 endcase
  
  In case construct, the execution checks for all the case statements and whichever satisfies the statement, that particular statement is executed.If there is no match, the default statement is executed. But here unlike if construct, the execution doesn't stop once statement is satisfied, but it continues further.
  
