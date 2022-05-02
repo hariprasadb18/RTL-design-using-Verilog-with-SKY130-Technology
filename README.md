@@ -21,7 +21,7 @@
         - [4.2.1 Basic](#421-Basic)
         - [4.2.2 Advanced](#422-Advanced)
         - [4.2.3 Sequential optimisation of unused outputs](#423-Sequential-optimisation-of-unused-outputs)
- - [5. DAY4- GLS, blocking vs non-blocking and Synthesis-Simulation mismatch](#5-DAY4--GLS,-blocking-vs-non-blocking-and-Synthesis-Simulation-mismatch)
+ - [5. DAY4- GLS, blocking vs non-blocking and Synthesis-Simulation mismatch](#5-DAY4--GLS-blocking-vs-non-blocking-and-Synthesis-Simulation-mismatch)
     - [5.1 GLS, Synthesis-Simulation mismatch and Blocking/Non-blocking statements](#5.1-GLS,-Synthesis-Simulation-mismatch-and-Blocking/Non-blocking-statements)
         - [5.1.1 GLS Concepts And Flow Using Iverilog](#511-GLS-Concepts-And-Flow-Using-Iverilog)
         - [5.1.2 Synthesis Simulation Mismatch](#512-Synthesis-Simulation-Mismatch)
