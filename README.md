@@ -19,6 +19,8 @@
     - [4.1 Introduction to optimizations](#41-Introduction-to-optimizations)
        - [4.1.1 Combinational logic optimization](#411-Combinational-logic-optimization)
        - [4.1.2 Sequential logic optimization](#412-Sequential-logic-optimization)
+          - [4.1.2.1 Basic](#4121-Basic)
+          - [4.1.2.2 Advanced](#4122-Advanced)
 # 1. Introduction
 This report is a final submission of 5-day workshop from [VLSI Sytem Design-IAT](https://www.vlsisystemdesign.com/) on RTL design and synthesis using open source tools, in particular iVerilog, GTKWave, Yosy and Skywater 130nm Standard Cell Libraries  
 # 2. Introduction to Verilog RTL design and Synthesis
@@ -195,7 +197,7 @@ Below is the snippet showing the synthesis results and synthesized circuit for m
 
 ![Yosys5](https://user-images.githubusercontent.com/104454253/166101451-5d963a17-4cb7-47fd-818d-c7d34df2665c.JPG)
 
-# 3. DAY2- Timing libs, hierarchical vs flat synthesis and efficient flop coding styles
+# 3. DAY2-Timing libs, hierarchical, flat synthesis, efficient flop coding styles
 
 ## 3.1 Introduction to timing .libs
 ### 3.1.1 LAB- Introduction to dot Lib
@@ -544,7 +546,7 @@ Below are the various techniques used for sequential logic optimisations:<br />
   - Retiming
   - Sequential Logic Cloning (Floor Plan Aware Synthesis)
  
-**Basic**
+#### 4.1.2.1 Basic
 
 **Sequential contant propagation**-Here only the first logic can be optimized as the output of flp always zero. However for the second flop, the output changes continuously, therefor it cannot be used for contant propagation.
 
@@ -552,7 +554,7 @@ Below are the various techniques used for sequential logic optimisations:<br />
 
 ![6ef09bec-38c3-4a13-901b-0221461c9aca](https://user-images.githubusercontent.com/104454253/166128295-40ddcdda-9b4e-4a0f-a27e-5c5bd9a8bb3e.jpg)
 
-**Advanced**<br />
+#### 4.1.2.2 Advanced <br />
 **State Optimisation**: This is optimisation of unused state. Using this technique we can come up with most optimised state machine.
 
 **Cloning**: This is done when performing PHYSICAL AWARE SYNTHESIS. Lets consider a flop A which is connected to flop B and flop C through a combination logic. If B and C are placed far from A in the flooerplan, there is a routing path delay. To avoid this, we connect A to two intermediate flops and then from these flops the output is sent to B and C thereby decreasing the delay. This process is called cloning since we are generating two new flops with same functionality as A.
@@ -561,27 +563,27 @@ Below are the various techniques used for sequential logic optimisations:<br />
 
 Command to optimize the circuit by yosys is **yosys> opt_clean -purge**
 
-**Example-1**
+**Example-1**<br />
 	module opt_check (input a , input b , output y);
 		assign y = a?b:0;
 	endmodule
 
-**Example-2**
+**Example-2**<br />
 	module opt_check2 (input a , input b , output y);
 		assign y = a?1:b;
 	endmodule
 
-**Example-3**
+**Example-3**<br />
 	module opt_check3 (input a , input b, input c , output y);
 		assign y = a?(c?b:0):0;
 	endmodule
 
-**Example-4**
+**Example-4**<br />
 	module opt_check4 (input a , input b , input c , output y);
 		assign y = a?(b?(a & c ):c):(!c);
 	endmodule
  
-**Example- 5**
+**Example- 5**<br />
 	module sub_module(input a , input b , output y);
 		assign y = a & b;
 	endmodule
