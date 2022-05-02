@@ -30,7 +30,7 @@
  - [6. DAY5- if, case, for loop and for generate](#6.-DAY5--if,-case,-for-loop-and-for-generate)
     - [6.1 If Case constructs](#61-If-Case-constructs)
        - [6.1.1 If construct](#611-If-construct)
-       - [6.1.2 Case construct](##612-Case-construct)
+       - [6.1.2 Case construct](#612-Case-construct)
     - [6.2 Lab- Incomplete IF](#62-Lab--Incomplete-IF)
     - [6.3 Lab- incomplete overlapping Case](#63-Lab--incomplete-overlapping-Case)
     - [6.4 For Loop and For Generate](#64-For-Loop-and-For-Generate)
