@@ -531,7 +531,7 @@ The schematic for the same is shown below:
 
 ![mult8netlist](https://user-images.githubusercontent.com/104454253/166121455-11f0dee0-cc32-4438-8797-43853aa2bc07.JPG)
 
-# 4. Day3 Combinational and sequential optmizations
+# 4. Day3- Combinational and sequential optmizations
 
 ## 4.1 Combinational logic optimization with examples
 
