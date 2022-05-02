@@ -26,6 +26,14 @@
         - [5.1.1 GLS Concepts And Flow Using Iverilog](#511-GLS-Concepts-And-Flow-Using-Iverilog)
     - [5.2 Lab- GLS Synth Sim Mismatch](#52-Lab--GLS-Synth-Sim-Mismatch)
     - [5.3 Lab Synthesis simulation mismatch blocking statement](#5.3-Lab-Synthesis-simulation-mismatch-blocking-statement)
+ - [6. DAY5- if, case, for loop and for generate](#6.-DAY5--if,-case,-for-loop-and-for-generate)
+    - [6.1 If Case constructs](#61-If-Case-constructs)
+       -[6.1.1 If construct](#611-If-construct)
+       -[6.1.2 Case construct](##612-Case-construct)
+    - [6.2 Lab Incomplete IF](#62-Lab-Incomplete-IF)
+    - [6.3 Lab incomplete overlapping Case](#63-Lab-incomplete-overlapping-Case)
+    - [6.4 For Loop and For Generate](#64-For-Loop-and-For-Generate)
+    - [6.5 Lab For and For Generate](#65-Lab-For-and-For-Generate)
 # 1. Introduction
 This report is a final submission of 5-day workshop from [VLSI Sytem Design-IAT](https://www.vlsisystemdesign.com/) on RTL design and synthesis using open source tools, in particular iVerilog, GTKWave, Yosy and Skywater 130nm Standard Cell Libraries  
 # 2. Introduction to Verilog RTL design and Synthesis
@@ -912,18 +920,30 @@ Here the output is depending on the past value of x which is dependednt on a and
 
 ![gtkwaveblocking_caveat_netlist](https://user-images.githubusercontent.com/104454253/166208291-d7e20448-3617-4001-8f31-f9f91cc0cb95.JPG)
 
-**SKY130RTL D4SK3 L2 Lab Synth sim mismatch blocking statement part2**
+# 6. DAY5- if, case, for loop and for generate
 
-Here the netlist is generated and the respective gtkwave is generated
+## 6.1 If and Case constructs
 
-**DAY5- Optimization in synthesis**
+### 6.1.1 If construct
+The construct **if** is mainly used to create priority logic. In a nested if else construct, the conditions are given priority from top to bottom. Only if the condition is satisfied, if statement is executed and the compiler comes out of the block. If condition fails, it checks for next condition and so on as shown below.
 
-**If Case constructs**
-**SKY130RTL D5SK1 L1 IF CASE Constructs part1**
-if is mainly used to create priority logic
+**Syntax for nested if else**
 
-syntax
-nested if elseif syntax and tell about priorities
+	if (<condition 1>)
+	begin
+	-----------
+	-----------
+	end
+	else if (<condition 2>)
+	begin
+	-----------
+	-----------
+	end
+	else if (<condition 3>)
+	.
+	.
+	.
+	
 Dangers with IF
 **SKY130RTL D5SK1 L2 IF CASE Constructs part2**
 continuation
@@ -934,103 +954,152 @@ caveat 2 of case
 
 comparison btwn if, elseif, elseif, else and case
 
-**SKY130RTL D5SK2 L1 Lab Incomplete IF part1**
+## 6.2 Lab Incomplete IF
 
-Example1
+**Example-1**
 
-module incomp_if (input i0 , input i1 , input i2 , output reg y);
-always @ (*)
-begin
-	if(i0)
-		y <= i1;
-end
-endmodule
+	module incomp_if (input i0 , input i1 , input i2 , output reg y);
+	always @ (*)
+	begin
+		if(i0)
+			y <= i1;
+	end
+	endmodule
 
-**SKY130RTL D5SK2 L2 Lab Incomplete IF part2**
-Example2-
+**Simulation**
 
-module incomp_if2 (input i0 , input i1 , input i2 , input i3, output reg y);
-always @ (*)
-begin
-	if(i0)
-		y <= i1;
-	else if (i2)
-		y <= i3;
+![simulationincomif](https://user-images.githubusercontent.com/104454253/166212734-9af50022-ebdd-4546-9227-25a35759d8f6.JPG)
 
-end
-endmodule
+**Synthesis**
 
-**SKY130RTL D5SK3 L1 Lab incomplete overlapping Case part1**
-Example1- 
-module partial_case_assign (input i0 , input i1 , input i2 , input [1:0] sel, output reg y , output reg x);
-always @ (*)
-begin
-	case(sel)
-		2'b00 : begin
-			y = i0;
-			x = i2;
-			end
-		2'b01 : y = i1;
-		default : begin
-		           x = i1;
-			   y = i2;
-			  end
-	endcase
-end
-endmodule
+![sythesisincomp_if](https://user-images.githubusercontent.com/104454253/166212767-d60021fa-9102-4edb-83c7-cd87b3439f24.JPG)
 
-**SKY130RTL D5SK3 L2 Lab incomplete overlapping Case part2**
+**Example-2**
 
-module comp_case (input i0 , input i1 , input i2 , input [1:0] sel, output reg y);
-always @ (*)
-begin
-	case(sel)
-		2'b00 : y = i0;
-		2'b01 : y = i1;
-		default : y = i2;
-	endcase
-end
-endmodule
+	module incomp_if2 (input i0 , input i1 , input i2 , input i3, output reg y);
+		always @ (*)
+		begin
+			if(i0)
+				y <= i1;
+			else if (i2)
+				y <= i3;
+		end
+	endmodule
 
-**Example3**
+**Synthesis**
 
-module partial_case_assign (input i0 , input i1 , input i2 , input [1:0] sel, output reg y , output reg x);
-always @ (*)
-begin
-	case(sel)
-		2'b00 : begin
-			y = i0;
-			x = i2;
-			end
-		2'b01 : y = i1;
-		default : begin
-		           x = i1;
-			   y = i2;
-			  end
-	endcase
-end
-endmodule
+![gtkwaveincomp_if2](https://user-images.githubusercontent.com/104454253/166212933-520affd3-c367-4bbf-8ffc-14d30ca05ebe.JPG)
 
+**Simulation**
 
-Example-4
-**SKY130RTL D5SK3 L3 Lab incomplete overlapping Case part3**
-module bad_case (input i0 , input i1, input i2, input i3 , input [1:0] sel, output reg y);
-always @(*)
-begin
-	case(sel)
-		2'b00: y = i0;
-		2'b01: y = i1;
-		2'b10: y = i2;
-		2'b1?: y = i3;
-		//2'b11: y = i3;
-	endcase
-end
+![synthesisincomp_if2](https://user-images.githubusercontent.com/104454253/166212941-6ca8d979-1e4b-4ae1-b5f2-a74a229f5629.JPG)
 
-endmodule
-**SKY130RTL D5SK3 L4 Lab incomplete overlapping Case part4** 
-bad_case synthesis
+## 6.3 Lab incomplete overlapping Case
 
-**SKY130RTL D5SK4 L1 For Loop and For Generate part1**
+**Example-1**
+
+	module partial_case_assign (input i0 , input i1 , input i2 , input [1:0] sel, output reg y , output reg x);
+	always @ (*)
+	begin
+		case(sel)
+			2'b00 : begin
+				y = i0;
+				x = i2;
+				end
+			2'b01 : y = i1;
+			default : begin
+		         	  x = i1;
+				   y = i2;
+				 end
+		endcase
+	end
+	endmodule
+
+**Simulator**
+
+![simulationincomp_case](https://user-images.githubusercontent.com/104454253/166213607-d8de1148-7963-45b9-88fc-46531de026ce.JPG)
+
+**Synthesis**
+
+![synthesisincom_Case](https://user-images.githubusercontent.com/104454253/166213609-c8221a76-2bc7-4ef6-b519-e76d5ee7211a.JPG)
+
+**Example-2- Complete case**
+
+	module comp_case (input i0 , input i1 , input i2 , input [1:0] sel, output reg y);
+	always @ (*)
+	begin
+		case(sel)
+			2'b00 : y = i0;
+			2'b01 : y = i1;
+			default : y = i2;
+		endcase
+	end
+	endmodule
+
+**Simulation**
+
+![simulationcomp_case](https://user-images.githubusercontent.com/104454253/166213705-5443daf5-2996-46e3-900a-c0991edb1fb0.JPG)
+
+**Synthesis**
+
+![synthesiscomp_case](https://user-images.githubusercontent.com/104454253/166213716-d37ad0f3-f111-4bd5-bf73-c77558a48909.JPG)
+
+**Example-3**
+
+	module partial_case_assign (input i0 , input i1 , input i2 , input [1:0] sel, output reg y , output reg x);
+	always @ (*)
+	begin
+		case(sel)
+			2'b00 : begin
+				y = i0;
+				x = i2;
+				end
+			2'b01 : y = i1;
+			default : begin
+		         	  x = i1;
+				  y = i2;
+			 	 end
+		endcase
+	end
+	endmodule
+
+**Simulation**
+
+![simulationpartialcaseassign](https://user-images.githubusercontent.com/104454253/166214052-38f2b8ff-af9e-445a-be5e-699021c7a3ef.JPG)
+
+**Synthesis**
+
+![synthesispartial_case_assign](https://user-images.githubusercontent.com/104454253/166214065-30f2cab1-a8c3-4c6b-92c4-c7b9728ca399.JPG)
+
+**Example-4-Bad case construct**
+
+	module bad_case (input i0 , input i1, input i2, input i3 , input [1:0] sel, output reg y);
+	always @(*)
+	begin
+		case(sel)
+			2'b00: y = i0;
+			2'b01: y = i1;
+			2'b10: y = i2;
+			2'b1?: y = i3;
+			//2'b11: y = i3;
+		endcase
+	end
+	endmodule
+	
+**Simulation**
+
+![simulationbad_case](https://user-images.githubusercontent.com/104454253/166214296-1423f7e9-9e53-46ae-9f2d-5ca7d8d364d4.JPG)
+
+**Synthesis**
+
+![synthesisbad_case](https://user-images.githubusercontent.com/104454253/166214308-b4232ff5-300c-426d-9a58-e612a90cfd77.JPG)
+
+**Netlist simulation**
+
+![simulationbad_case_netlist](https://user-images.githubusercontent.com/104454253/166214909-3c04f425-ea44-4456-8c76-7b81b236b86a.JPG)
+
+## 6.4 For Loop and For Generate
+
 Generate for loop is used for instantaing hardware
 
 **SKY130RTL D5SK4 L2 For Loop and For Generate part2**
@@ -1039,30 +1108,45 @@ FOR Generate
 **SKY130RTL D5SK4 L2 For Loop and For Generate part3**
 For Generate example
 
-**SKY130RTL D5SK5 L1 Lab For and For Generate part1**
+## 6.5 Lab For and For Generate
 simulation, gtkwave, synthesis, gtkwave of synthesis.
-module mux_generate (input i0 , input i1, input i2 , input i3 , input [1:0] sel  , output reg y);
-wire [3:0] i_int;
-assign i_int = {i3,i2,i1,i0};
-integer k;
-always @ (*)
-begin
-for(k = 0; k < 4; k=k+1) begin
-	if(k == sel)
-		y = i_int[k];
-end
-end
-endmodule
 
-**SKY130RTL D5SK5 L1 Lab For and For Generate part2**
+**Example-1- Mux using generate**
 
-module demux_case (output o0 , output o1, output o2 , output o3, output o4, output o5, output o6 , output o7 , input [2:0] sel  , input i);
-reg [7:0]y_int;
-assign {o7,o6,o5,o4,o3,o2,o1,o0} = y_int;
-integer k;
-always @ (*)
-begin
-y_int = 8'b0;
+	module mux_generate (input i0 , input i1, input i2 , input i3 , input [1:0] sel  , output reg y);
+		wire [3:0] i_int;
+		assign i_int = {i3,i2,i1,i0};
+		integer k;
+	always @ (*)
+		begin
+		for(k = 0; k < 4; k=k+1) begin
+			if(k == sel)
+			y = i_int[k];
+			end
+		end
+	endmodule
+
+**Simulation**
+
+![simulation_mux_generate](https://user-images.githubusercontent.com/104454253/166215022-1f6a3eff-2d8f-445d-9791-1fa84d997325.JPG)
+
+**Synthesis**
+
+![synthesis_mux_generate](https://user-images.githubusercontent.com/104454253/166215028-2f33e2ac-5094-42e0-b765-1a69da3d7eb9.JPG)
+
+**Netlist Simulation**
+
+![simulation_mux_generate_netlist](https://user-images.githubusercontent.com/104454253/166215037-7c6da2c4-65fd-4ec9-915b-6d02b9df515f.JPG)
+
+**Example-2-Demux using Case**
+
+	module demux_case (output o0 , output o1, output o2 , output o3, output o4, output o5, output o6 , output o7 , input [2:0] sel  , input i);
+	reg [7:0]y_int;
+	assign {o7,o6,o5,o4,o3,o2,o1,o0} = y_int;
+	integer k;
+	always @ (*)
+	begin
+	y_int = 8'b0;
 	case(sel)
 		3'b000 : y_int[0] = i;
 		3'b001 : y_int[1] = i;
@@ -1073,45 +1157,74 @@ y_int = 8'b0;
 		3'b110 : y_int[6] = i;
 		3'b111 : y_int[7] = i;
 	endcase
-
-end
-endmodule
-
-
-module demux_generate (output o0 , output o1, output o2 , output o3, output o4, output o5, output o6 , output o7 , input [2:0] sel  , input i);
-reg [7:0]y_int;
-assign {o7,o6,o5,o4,o3,o2,o1,o0} = y_int;
-integer k;
-always @ (*)
-begin
-y_int = 8'b0;
-for(k = 0; k < 8; k++) begin
-	if(k == sel)
-		y_int[k] = i;
-end
-end
-endmodule
-
-**SKY130RTL D5SK5 L3 Lab For and For Generate part3**
-
-module rca (input [7:0] num1 , input [7:0] num2 , output [8:0] sum);
-wire [7:0] int_sum;
-wire [7:0]int_co;
-
-genvar i;
-generate
-	for (i = 1 ; i < 8; i=i+1) begin
-		fa u_fa_1 (.a(num1[i]),.b(num2[i]),.c(int_co[i-1]),.co(int_co[i]),.sum(int_sum[i]));
 	end
+	endmodule
 
-endgenerate
-fa u_fa_0 (.a(num1[0]),.b(num2[0]),.c(1'b0),.co(int_co[0]),.sum(int_sum[0]));
+**Simulation**
+
+![sim_demux_case](https://user-images.githubusercontent.com/104454253/166215304-63d9a1ef-6840-4d13-a096-7f728a706d76.JPG)
+
+**Synthesis**
+
+![synthdemux_case](https://user-images.githubusercontent.com/104454253/166215350-db45ff4f-6346-45ed-8d0d-40db10039446.JPG)
+
+**Netlist Simulation**
+
+**Example-3-Demux using Generate**
+
+	module demux_generate (output o0 , output o1, output o2 , output o3, output o4, output o5, output o6 , output o7 , input [2:0] sel  , input i);
+	reg [7:0]y_int;
+	assign {o7,o6,o5,o4,o3,o2,o1,o0} = y_int;
+	integer k;
+	always @ (*)
+	begin
+		y_int = 8'b0;
+		for(k = 0; k < 8; k++) begin
+			if(k == sel)
+			y_int[k] = i;
+		end
+	end
+	endmodule
+
+**Synthesis**
+
+![simulationdemux_generate](https://user-images.githubusercontent.com/104454253/166215467-b947a96a-cce8-4dab-b551-8d05109bfc7c.JPG)
+
+**Simulation**
+
+![synthdemux_generate](https://user-images.githubusercontent.com/104454253/166215477-0cb58974-29e0-42ae-adf9-c96e1addefb5.JPG)
+
+**Example-4- Ripple carry adder using fulladder**
+
+	module rca (input [7:0] num1 , input [7:0] num2 , output [8:0] sum);
+	wire [7:0] int_sum;
+	wire [7:0]int_co;
+
+	genvar i;
+	generate
+		for (i = 1 ; i < 8; i=i+1) begin
+			fa u_fa_1 (.a(num1[i]),.b(num2[i]),.c(int_co[i-1]),.co(int_co[i]),.sum(int_sum[i]));
+		end
+
+	endgenerate
+	fa u_fa_0 (.a(num1[0]),.b(num2[0]),.c(1'b0),.co(int_co[0]),.sum(int_sum[0]));
 
 
-assign sum[7:0] = int_sum;
-assign sum[8] = int_co[7];
-endmodule
+	assign sum[7:0] = int_sum;
+	assign sum[8] = int_co[7];
+	endmodule
 
-module fa (input a , input b , input c, output co , output sum);
-endmodule
+	module fa (input a , input b , input c, output co , output sum);
+	endmodule
 
+**Synthesis**
+
+![sim_rca](https://user-images.githubusercontent.com/104454253/166215641-bb752eb7-9709-4c0a-a6b7-cce9cb585097.JPG)
+
+**Simulation**
+
+![synth_rca](https://user-images.githubusercontent.com/104454253/166215658-dc566124-519d-477d-8e4a-7b990b40c191.JPG)
+
+**Netlist Simulation**
+
+![sim_rca_netlist](https://user-images.githubusercontent.com/104454253/166215690-7afb3dc5-9890-42b7-acd7-cc31b336f6e3.JPG)
