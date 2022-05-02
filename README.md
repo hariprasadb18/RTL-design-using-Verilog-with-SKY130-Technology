@@ -1011,7 +1011,7 @@ case(statement)
 **Caveats in Case**<br />
 Caveats in case occur due to two reasons. One is **incomplete case statements** and the other is **partial assignments in case statements.**
 
-## 6.2 Lab Incomplete IF
+## 6.2 Lab- Incomplete IF
 
 This incomplete if construct forms a connection between i0 and output y i.e, D-latch with input as i1 and i0 will be the enable for it.<br />
 **Example-1**
