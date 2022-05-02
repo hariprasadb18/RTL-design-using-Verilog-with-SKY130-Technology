@@ -8,7 +8,7 @@
      	- [2.2.1 Lab examples using iverilog and gtkwave](#221-Lab-examples-using-iverilog-and-gtkwave)
     - [2.3 Introduction to Yosys simulator](#23-Introduction-to-Yosys-simulator)
         - [2.3.1 Labs on Yosys introduction](#231-Labs-on-Yosys-introduction)
-  - [3. DAY2- Timing libs, hierarchical vs flat synthesis and efficient flop coding styles](#3.-DAY2--Timing libs,-hierarchical-vs-flat-synthesis-and-efficient-flop-coding-styles)
+ - [3. DAY2- Timing libs, hierarchical vs flat synthesis and efficient flop coding styles](#3.-DAY2--Timing libs,-hierarchical-vs-flat-synthesis-and-efficient-flop-coding-styles)
     - [3.1 Introduction to timing .libs](#31-Introduction-to-timing-.libs)
         - [3.1.1 LAB- Introduction to dot Lib](#311-LAB--Introduction-to-dot-Lib)
         - [3.1.2 LAB Hierarchical synthesis and flat synthesis](#312-LAB-Hierarchical-synthesis-and-flat-synthesis)
