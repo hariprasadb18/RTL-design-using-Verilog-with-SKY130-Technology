@@ -21,6 +21,11 @@
         - [4.2.1 Basic](#421-Basic)
         - [4.2.2 Advanced](#422-Advanced)
         - [4.2.3 Sequential optimisation of unused outputs](#423-Sequential-optimisation-of-unused-outputs)
+ - [5. DAY4- GLS, blocking vs non-blocking and Synthesis-Simulation mismatch](#5.-DAY4--GLS,-blocking-vs-non-blocking-and-Synthesis-Simulation-mismatch)
+    - [5.1 GLS, Synthesis-Simulation mismatch and Blocking/Non-blocking statements](#5.1-GLS,-Synthesis-Simulation-mismatch-and-Blocking/Non-blocking-statements)
+        - [5.1.1 GLS Concepts And Flow Using Iverilog](#511-GLS-Concepts-And-Flow-Using-Iverilog)
+    - [5.2 Lab- GLS Synth Sim Mismatch](#52-Lab--GLS-Synth-Sim-Mismatch)
+    - [5.3 Lab Synthesis simulation mismatch blocking statement](#5.3-Lab-Synthesis-simulation-mismatch-blocking-statement)
 # 1. Introduction
 This report is a final submission of 5-day workshop from [VLSI Sytem Design-IAT](https://www.vlsisystemdesign.com/) on RTL design and synthesis using open source tools, in particular iVerilog, GTKWave, Yosy and Skywater 130nm Standard Cell Libraries  
 # 2. Introduction to Verilog RTL design and Synthesis
@@ -804,41 +809,108 @@ All the other blocks in synthesizer are for incrementing the counter but the out
 
 ![synthcounter_optupdated](https://user-images.githubusercontent.com/104454253/166201230-5459b740-9774-444e-b6db-ad6ccb8147ef.JPG)
 
-**DAY4-GLS, blocking vs non-blocking and Synthesis-Simulation mismatch**
+# 5. DAY4-GLS, blocking vs non-blocking and Synthesis-Simulation mismatch
 
-**GLS, Synthesis-Simulation mismatch and Blocking/Non-blocking statements**
-**SKY130RTL D4SK1 L1 GLSConceptsAndFlowUsingIverilog**
+# 5.1 GLS, Synthesis-Simulation mismatch and Blocking/Non-blocking statements
+### 5.1.1 GLS Concepts And Flow Using Iverilog
 As the synthesizer doen't look for sensitivity list and it looks only for the statements in procedural block, it infers correct circuit  and if we simulate the netlist code, there will be a synthesis simulation mismatch
 To avoid the synthesis and simulation mismatch. it is very important to check the behavpior of the circuit first and then match it with the expected output seen in simulation and make sure there are no synthesis and simulation mismatches. This is why we use GLS.
 
-**SKY130RTL D4SK2 L1 Lab GLS Synth Sim Mismatch part1**
+### 5.2 Lab- GLS Synthesis Simulation Mismatch
 
-module ternary_operator_mux (input i0 , input i1 , input sel , output y);
-	assign y = sel?i1:i0;
+**Example-1**
+
+	module ternary_operator_mux (input i0 , input i1 , input sel , output y);
+		assign y = sel?i1:i0;
 	endmodule
 	
-**SKY130RTL D4SK2 L2 Lab GLS Synth Sim Mismatch part2**
-module bad_mux (input i0 , input i1 , input sel , output reg y);
-always @ (sel)
-begin
-	if(sel)
-		y <= i1;
-	else 
-		y <= i0;
-end
-endmodule
+**Simulation**
 
-**SKY130RTL D4SK3 L1 Lab Synth sim mismatch blocking statement part1**
+![gtkternary_mux](https://user-images.githubusercontent.com/104454253/166204654-3946e42a-3e48-478e-9144-37b7eeadc8cd.JPG)
+
+**Synthesis**
+
+![synthesisternary_mux](https://user-images.githubusercontent.com/104454253/166204718-12da283d-277d-4d72-8c02-93521cda3abe.JPG)
+
+**Netlist Simulation**
+
+![simGLSternary_mux](https://user-images.githubusercontent.com/104454253/166204813-8022428f-9848-4bf2-9c22-9dc730b1305b.JPG)
+
+**Example-2**
+
+	module bad_mux (input i0 , input i1 , input sel , output reg y);
+		always @ (sel)
+		begin
+			if(sel)
+				y <= i1;
+			else 
+				y <= i0;
+		end
+	endmodule
+
+**Simulation**
+
+![simbad_mux](https://user-images.githubusercontent.com/104454253/166204842-37f6ce2e-6e3f-40f4-8565-291621584acf.JPG)
+
+**Synthesis**
+
+![synthbad_mux](https://user-images.githubusercontent.com/104454253/166205989-ebd33255-d75a-4f1e-a126-bd0da6ea3c0f.JPG)
+
+
+**Netlist Simulation**
+
+![simbadmuxnetlist](https://user-images.githubusercontent.com/104454253/166204853-14865a7a-2b9a-4af0-b552-4a1a647ad56c.JPG)
+
+**Example-3**
+
+	module good_mux (input i0 , input i1 , input sel , output reg y);
+		always @ (*)
+		begin
+			if(sel)
+				y <= i1;
+			else 
+				y <= i0;
+		end
+	endmodule
+	
+**Simulation**
+
+![gtkwavegood_mux](https://user-images.githubusercontent.com/104454253/166206079-3b4799e8-c110-409a-8630-6bba41d4e52b.JPG)
+
+**Synthesis**
+
+![synthgood_mux](https://user-images.githubusercontent.com/104454253/166206100-6ac5d20c-89ec-48ba-bfb8-20113468e350.JPG)
+
+**Netlist Simulation**
+
+![gtkgood_muxnetlist](https://user-images.githubusercontent.com/104454253/166206120-d45f4a7e-9f9a-4392-ba28-dcdd45777ded.JPG)
+
+## 5.3 Lab Synthesis simulation mismatch blocking statement
 
 Here the output is depending on the past value of x which is dependednt on a and b and it appears like a flop.
-module blocking_caveat (input a , input b , input  c, output reg d); 
-reg x;
-always @ (*)
-begin
-	d = x & c;
-	x = a | b;
-end
-endmodule
+
+**Example**
+
+	module blocking_caveat (input a , input b , input  c, output reg d); 
+	reg x;
+	always @ (*)
+		begin
+		d = x & c;
+		x = a | b;
+	end
+	endmodule
+
+**Simulation**
+
+![gtkwaveblockingcaveat](https://user-images.githubusercontent.com/104454253/166208218-70206c9a-ceb7-436c-8119-9da2eb2d166f.JPG)
+
+**Synthesis**
+
+![synthesisblocking_caveat](https://user-images.githubusercontent.com/104454253/166208245-a5b60e7d-68f3-41bf-950e-bd86632ccbae.JPG)
+
+**Netlist Simulation**
+
+![gtkwaveblocking_caveat_netlist](https://user-images.githubusercontent.com/104454253/166208291-d7e20448-3617-4001-8f31-f9f91cc0cb95.JPG)
 
 **SKY130RTL D4SK3 L2 Lab Synth sim mismatch blocking statement part2**
 
