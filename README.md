@@ -6,7 +6,7 @@
     - [2.1 Various aspects of frontend design](#21-Various-aspects-of-frontend-design)
     - [2.2 Introduction to open source simulator iverilog and gtkwave](#22-Introduction-to-open-source-simulator-iverilog-and-gtkwave)
      	- [2.2.1 Lab examples using iverilog and gtkwave](#221-Lab-examples-using-iverilog-and-gtkwave)
-    - [2.3 Introduction to Yosys simulator](#23-Introduction-to-Yosys-simulator)
+    - [2.3 Introduction to Yosys synthesizer](#23-Introduction-to-Yosys-synthesizer)
         - [2.3.1 Labs on Yosys introduction](#231-Labs-on-Yosys-introduction)
  - [3. DAY2-Timing libs, hierarchical, flat synthesis, efficient flop coding styles](#3-DAY2-Timing-libs,-hierarchical,-flat-synthesis,-efficient-flop-coding-styles)
     - [3.1 Introduction to timing .libs](#31-Introduction-to-timing-.libs)
@@ -118,7 +118,7 @@ Here is the code and gtkwave snippets:<br />
 ![goodmuxgtkwaveCapture](https://user-images.githubusercontent.com/104454253/166117453-7f4918e9-acb4-4ad5-b35a-0933c8578312.JPG)
 
 
-## 2.3 Introduction to Yosys syntheseizer
+## 2.3 Introduction to Yosys synthesizer
 
 **Synthesis**: Synthesis transforms the simple RTL design into a gate-level netlist with all the constraints as specified by the designer. In simple language, Synthesis is a process that converts the abstract form of design to a properly implemented chip in terms of logic gates.
 
