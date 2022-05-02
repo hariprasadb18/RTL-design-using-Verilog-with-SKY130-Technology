@@ -81,6 +81,7 @@ In this session, I've performed simulation of multiplexer. I've added both the R
 ![muxcommands](https://user-images.githubusercontent.com/104454253/166117682-8c5149a4-8df9-456c-8e9a-744d6693243d.JPG)
 
 Here is the code and gtkwave snippets:<br />
+
 	module good_mux (input i0 , input i1 , input sel , output reg y); 
 		always @ (*)
 		begin
