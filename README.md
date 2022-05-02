@@ -866,7 +866,7 @@ There are three main reasons for Synthesis Simulation Mismatch:<br />
 
 **Missing sensitivity list in always block:**<br />
 
-If the consider - [Example-2](Example-2), we can see the only **sel** is mentioned in the sensitivity list. During the simulation, the waveforms will resemble a latched output but the simulation of netlist will not infer this as the synthesizer will only look at the statements with in the procedural block and not the sensitivity list.
+If the consider - Example-2, we can see the only **sel** is mentioned in the sensitivity list. During the simulation, the waveforms will resemble a latched output but the simulation of netlist will not infer this as the synthesizer will only look at the statements with in the procedural block and not the sensitivity list.
 
 As the synthesizer doen't look for sensitivity list and it looks only for the statements in procedural block, it infers correct  circuit  and if we simulate the netlist code, there will be a synthesis simulation mismatch.
 
@@ -874,7 +874,7 @@ To avoid the synthesis and simulation mismatch. It is very important to check th
 
 **Blocking vs Non-Blocking Assignments**:
 
-Blocking statements execute the statemetns in the order they are written inside the always block. Non-Blocking statements execute all the RHS and once always block is entered, the values are assigned to LHS. This will give mismatch as sometimes, improper use of blocking statements can create latches. Please click here to go to example - [Example](Example)
+Blocking statements execute the statemetns in the order they are written inside the always block. Non-Blocking statements execute all the RHS and once always block is entered, the values are assigned to LHS. This will give mismatch as sometimes, improper use of blocking statements can create latches. Please click here to go to example - Example4
 
 ## 5.2 Lab- GLS Synth Sim Mismatch
 
@@ -952,7 +952,7 @@ Blocking statements execute the statemetns in the order they are written inside 
 
 Here the output is depending on the past value of x which is dependednt on a and b and it appears like a flop.
 
-# Example
+# Example4
 
 	module blocking_caveat (input a , input b , input  c, output reg d); 
 	reg x;
