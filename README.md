@@ -16,11 +16,10 @@
             - [3.1.3.1 Lab flop synthesis simulations](#3131-Lab-flop-synthesis-simulations)
             - [3.1.3.2 Interesting optimisations](#3132-Interesting-optimisations)
   - [4. Day3- Combinational and sequential optmizations](#4-Day3--Combinational-and-sequential-optmizations)
-    - [4.1 Introduction to optimizations](#41-Introduction-to-optimizations)
-       - [4.1.1 Combinational logic optimization](#411-Combinational-logic-optimization)
-       - [4.1.2 Sequential logic optimization](#412-Sequential-logic-optimization)
-          - [4.1.2.1 Basic](#4121-Basic)
-          - [4.1.2.2 Advanced](#4122-Advanced)
+     - [4.1 Combinational logic optimization with examples](#411-Combinational-logic-optimization-with-examples)
+     - [4.2 Sequential logic optimization with examples](#412-Sequential-logic-optimization-with-examples)
+        - [4.2.1 Basic](#4121-Basic)
+        - [4.2.2 Advanced](#4122-Advanced)
 # 1. Introduction
 This report is a final submission of 5-day workshop from [VLSI Sytem Design-IAT](https://www.vlsisystemdesign.com/) on RTL design and synthesis using open source tools, in particular iVerilog, GTKWave, Yosy and Skywater 130nm Standard Cell Libraries  
 # 2. Introduction to Verilog RTL design and Synthesis
@@ -514,9 +513,8 @@ The schematic for the same is shown below:
 ![mult8netlist](https://user-images.githubusercontent.com/104454253/166121455-11f0dee0-cc32-4438-8797-43853aa2bc07.JPG)
 
 # 4.- Day3 Combinational and sequential optmizations
-## 4.1 Introduction to optimizations
 
-### 4.1.1 Combinational logic optimization
+## 4.1. Combinational logic optimization with examples
 
 Optimising the combinational logic circuit is squeezing the logic to get the most optimized digital design so that the circuit finally is area and power efficient. This is achieved by the synthesis tool using various techniques and gives us the most optimized circuit.
 
@@ -536,7 +534,82 @@ Let's consider an example concurrent statement **assign y=a?(b?c:(c?a:0)):(!c)**
 
 The above expression is using a ternary operator which realizes a series of multiplexers, however, when we write the boolean expression at outputs of each mux and simplify them further using boolean reduction techniques, the outout **y** turns out be just **~(a^c)**
 
-### 4.1.2 Sequential Logic Optimization
+Command to optimize the circuit by yosys is **yosys> opt_clean -purge**
+
+**Example-1**
+
+	module opt_check (input a , input b , output y);
+		assign y = a?b:0;
+	endmodule
+
+**Optimized circuit**
+
+![opt_check](https://user-images.githubusercontent.com/104454253/166197017-cca6b780-cc9e-43b9-9c21-3c5a7f8c3947.JPG)
+
+**Example-2**
+
+	module opt_check2 (input a , input b , output y);
+		assign y = a?1:b;
+	endmodule
+
+![opt_check2](https://user-images.githubusercontent.com/104454253/166197032-9cfd996e-0351-4c78-ab88-544977174f8b.JPG)
+
+**Example-3**
+
+	module opt_check3 (input a , input b, input c , output y);
+		assign y = a?(c?b:0):0;
+	endmodule
+
+![opt_check3](https://user-images.githubusercontent.com/104454253/166197047-542213e7-2c6e-4f61-b391-6beadc48022a.JPG)
+
+**Example-4**
+
+	module opt_check4 (input a , input b , input c , output y);
+		assign y = a?(b?(a & c ):c):(!c);
+	endmodule
+ 
+ ![opt_check4](https://user-images.githubusercontent.com/104454253/166197170-bbf59d4e-0457-48ce-8ad9-6d36e0c4ffbb.JPG)
+
+**Example- 5**
+
+	module sub_module(input a , input b , output y);
+		assign y = a & b;
+	endmodule
+
+
+
+	module multiple_module_opt2(input a , input b , input c , input d , output y);
+		wire n1,n2,n3;
+		sub_module U1 (.a(a) , .b(1'b0) , .y(n1));
+		sub_module U2 (.a(b), .b(c) , .y(n2));
+		sub_module U3 (.a(n2), .b(d) , .y(n3));
+		sub_module U4 (.a(n3), .b(n1) , .y(y));
+	endmodule
+
+![multiplemoduleopt2](https://user-images.githubusercontent.com/104454253/166197277-56a666ff-eae9-45e8-bff6-afcab3e8e583.JPG)
+
+**Example-6**
+
+		module sub_module1(input a , input b , output y);
+		 assign y = a & b;
+		endmodule
+
+		module sub_module2(input a , input b , output y);
+		 assign y = a^b;
+		endmodule
+
+		module multiple_module_opt(input a , input b , input c , input d , output y);
+		wire n1,n2,n3;
+		sub_module1 U1 (.a(a) , .b(1'b1) , .y(n1));
+		sub_module2 U2 (.a(n1), .b(1'b0) , .y(n2));
+		sub_module2 U3 (.a(b), .b(d) , .y(n3));
+
+		assign y = c | (b & n1); 
+		endmodule
+
+![multiple_moduleopt](https://user-images.githubusercontent.com/104454253/166197287-6681bdc1-ff07-4350-b16e-ae2fc1ababbe.JPG)
+
+### 4.2 Sequential Logic Optimization with examples
 
 Below are the various techniques used for sequential logic optimisations:<br />
 -Basic
@@ -546,7 +619,7 @@ Below are the various techniques used for sequential logic optimisations:<br />
   - Retiming
   - Sequential Logic Cloning (Floor Plan Aware Synthesis)
  
-#### 4.1.2.1 Basic
+#### 4.2.1 Basic
 
 **Sequential contant propagation**-Here only the first logic can be optimized as the output of flp always zero. However for the second flop, the output changes continuously, therefor it cannot be used for contant propagation.
 
@@ -554,77 +627,13 @@ Below are the various techniques used for sequential logic optimisations:<br />
 
 ![6ef09bec-38c3-4a13-901b-0221461c9aca](https://user-images.githubusercontent.com/104454253/166128295-40ddcdda-9b4e-4a0f-a27e-5c5bd9a8bb3e.jpg)
 
-#### 4.1.2.2 Advanced <br />
+#### 4.2.2. Advanced
 **State Optimisation**: This is optimisation of unused state. Using this technique we can come up with most optimised state machine.
 
 **Cloning**: This is done when performing PHYSICAL AWARE SYNTHESIS. Lets consider a flop A which is connected to flop B and flop C through a combination logic. If B and C are placed far from A in the flooerplan, there is a routing path delay. To avoid this, we connect A to two intermediate flops and then from these flops the output is sent to B and C thereby decreasing the delay. This process is called cloning since we are generating two new flops with same functionality as A.
 
 **Retiming**: Retiming is a powerful sequential optimization technique used to move registers across the combinational logic or to optimize the number of registers to improve performance via power-delay trade-off, without changing the input-output behavior of the circuit. 
 
-Command to optimize the circuit by yosys is **yosys> opt_clean -purge**
-
-**Example-1**<br />
-	module opt_check (input a , input b , output y);
-		assign y = a?b:0;
-	endmodule
-
-**Example-2**<br />
-	module opt_check2 (input a , input b , output y);
-		assign y = a?1:b;
-	endmodule
-
-**Example-3**<br />
-	module opt_check3 (input a , input b, input c , output y);
-		assign y = a?(c?b:0):0;
-	endmodule
-
-**Example-4**<br />
-	module opt_check4 (input a , input b , input c , output y);
-		assign y = a?(b?(a & c ):c):(!c);
-	endmodule
- 
-**Example- 5**<br />
-	module sub_module(input a , input b , output y);
-		assign y = a & b;
-	endmodule
-
-
-
-module multiple_module_opt2(input a , input b , input c , input d , output y);
-wire n1,n2,n3;
-
-sub_module U1 (.a(a) , .b(1'b0) , .y(n1));
-sub_module U2 (.a(b), .b(c) , .y(n2));
-sub_module U3 (.a(n2), .b(d) , .y(n3));
-sub_module U4 (.a(n3), .b(n1) , .y(y));
-
-
-endmodule
-
-**Example-6**
-module sub_module1(input a , input b , output y);
- assign y = a & b;
-endmodule
-
-
-module sub_module2(input a , input b , output y);
- assign y = a^b;
-endmodule
-
-
-module multiple_module_opt(input a , input b , input c , input d , output y);
-wire n1,n2,n3;
-
-sub_module1 U1 (.a(a) , .b(1'b1) , .y(n1));
-sub_module2 U2 (.a(n1), .b(1'b0) , .y(n2));
-sub_module2 U3 (.a(b), .b(d) , .y(n3));
-
-assign y = c | (b & n1); 
-
-
-endmodule
-
-**SKY130RTL D3SK3 L1 Lab07 Sequential Logic Optimisations part1**
 **Example-1**
 In the synthesis report, we'll see that a Dflop was inferred in this example.
 module dff_const1(input clk, input reset, output reg q);
