@@ -4,8 +4,8 @@
  - [1. Introduction](#1-Introduction)
  - [2. Day-1- Introduction to Verilog RTL design and Synthesis](#2-day-1---introduction-to-verilog-rtl-design-and-synthesis)
     - [2.1 Various aspects of frontend design](#21-Various-aspects-of-frontend-design)
-       - [RTL Deisgn](#rtl-design)
-       - [Test Bench](#test-bench)
+    - [2.2 Introduction to open source simulator iverilog and gtkwave](#22-Introduction-to-open-source-simulator-iverilog-and-gtkwave)
+         -[2.2.1 Lab examples using iverilog and gtkwave](#221-Lab-examples-using-iverilog-and-gtkwave)
 # 1. Introduction
 This report is a final submission of 5-day workshop from [VLSI Sytem Design-IAT](https://www.vlsisystemdesign.com/) on RTL design and synthesis using open source tools, in particular iVerilog, GTKWave, Yosy and Skywater 130nm Standard Cell Libraries  
 # 2. Introduction to Verilog RTL design and Synthesis
@@ -13,22 +13,30 @@ This report is a final submission of 5-day workshop from [VLSI Sytem Design-IAT]
 **RTL Design**: In simple terms RTL design or Register Transfer Level design is a method in which we can transfer data from one register to another. In RTL design we write code for Combinational and Sequential circuits in HDL(Hardware Description Language) like Verilog or VerilogHDL which can model logical and hardware operation. RTL design can be one code or set of verilog codes. **One key note is that we need to write RTL design with optimized and synthesizable (realizable as physical gates)**.
 
 **Sample RTL design outline:**<br />
-module module_name (port list);<br />
-//declarations;<br />
-//initializations;<br />
-//continuos concurrent assigments;<br />
-//procedural blocks;<br />
-endmodule<br />
+	module module_name (port list);<br />
+		//declarations;<br />
+		//initializations;<br />
+		//continuos concurrent assigments;<br />
+		//procedural blocks;<br />
+	endmodule<br />
 
 **Test Bench**: Using Verilog we can write a test bench to apply stimulus to the RTL design and verify the results of the design by instantiating design with in test bench. Up-front verification becomes very important as design size increases in size and complexity while any project progresses. This ensures simulation results matches with post synthesis results. A test bench can have two parts, the one generates input signals for the model to be tested while the other part checks the output signals from the design under test. It can be represented as follows.
 ![Capture2](https://user-images.githubusercontent.com/104454253/166088950-634be5a4-7d5a-4b43-9990-711f8f660aaf.JPG)
 
-Simulation: RTL design is checked for adherence to its design specification using simulation by giving sample inputs. This helps finding and fixing bugs in the RTL design in the early stages of design development. 
+**Simulation**: RTL design is checked for adherence to its design specification using simulation by giving sample inputs. This helps finding and fixing bugs in the RTL design in the early stages of design development. 
 
-Simulator: Simulator is the tool used for this process. It looks for changes on input signals to evaluate outputs. No change in output if there is no change in input signals
+**Simulator**: Simulator is the tool used for this process. It looks for changes on input signals to evaluate outputs. No change in output if there is no change in input signals
 Here is the flow of frondend design:
+
 ![Capture1](https://user-images.githubusercontent.com/104454253/166088866-80a4e792-7db7-4bf2-b3b5-b4b9b92452a8.JPG)
-Labs using iverilog and gtkwave
+
+## 2.2 Introduction to open source simulator iverilog and gtkwave
+**iverilog**: iverilog stands for Icarus Verilog. Icarus Verilog is an implementation of the Verilog hardware description language. It supports the 1995, 2001 and 2005 versions of the standard, portions of SystemVerilog, and some extensions.
+
+**Gtkwave**: GTKWave is a fully featured GTK+ based wave viewer for Unix, Win32, and Mac OSX which reads LXT, LXT2, VZT, FST, and GHW files as well as standard Verilog VCD/EVCD files and allows their viewing. 
+
+## 2.2.1 Lab examples using iverilog and gtkwave
+
 Lab1- We were introducted to Linux operating system and were made aware of the basic commands. Using **git clone** command we've cloned library files like standard cell library, primitives which are used for synthesis and few verilog codes for practice.
 ![cloning files](https://user-images.githubusercontent.com/104454253/166092143-aa26356f-46a3-435b-b3d6-0d2fb4d216c2.JPG)
 ![cloning_githubfiles](https://user-images.githubusercontent.com/104454253/166092154-d93b2204-88e3-4848-ae98-ff5114ea2afe.JPG)
@@ -41,39 +49,39 @@ Here are the code and gtkwave snippets:
 ![muxcommands](https://user-images.githubusercontent.com/104454253/166117682-8c5149a4-8df9-456c-8e9a-744d6693243d.JPG)
 
 
-**module good_mux (input i0 , input i1 , input sel , output reg y); <br />
-always @ (*)<br />
-begin<br />
-	if(sel)<br />
-		y <= i1;<br />
-	else <br />
-		y <= i0;<br />
-end<br />
-endmodule**<br />
+	module good_mux (input i0 , input i1 , input sel , output reg y); <br />
+		always @ (*)<br />
+		begin<br />
+			if(sel)<br />
+			y <= i1;<br />
+			else <br />
+			y <= i0;<br />
+		end<br />
+	endmodule**<br />
 
 
-**`timescale 1ns / 1ps<br />
-module tb_good_mux;<br />
+	`timescale 1ns / 1ps<br />
+	module tb_good_mux;<br />
 	// Inputs<br />
 	reg i0,i1,sel;<br />
 	// Outputs<br />
 	wire y;<br />
-       // Instantiate the Unit Under Test (UUT), name based instantiation<br />
-	good_mux uut (.sel(sel),.i0(i0),.i1(i1),.y(y));<br />
-	//good_mux uut (sel,i0,i1,y);  //order based instantiation<br />
+      		// Instantiate the Unit Under Test (UUT), name based instantiation<br />
+		good_mux uut (.sel(sel),.i0(i0),.i1(i1),.y(y));<br />
+		//good_mux uut (sel,i0,i1,y);  //order based instantiation<br />
 	initial begin<br />
-	$dumpfile("tb_good_mux.vcd");<br />
-	$dumpvars(0,tb_good_mux);<br />
-	// Initialize Inputs<br />
-	sel = 0;<br />
-	i0 = 0;<br />
-	i1 = 0;<br />
-	#300 $finish;<br />
+		$dumpfile("tb_good_mux.vcd");<br />
+		$dumpvars(0,tb_good_mux);<br />
+		// Initialize Inputs<br />
+		sel = 0;<br />
+		i0 = 0;<br />
+		i1 = 0;<br />
+		#300 $finish;<br />
 	end<br />
-always #75 sel = ~sel;<br />
-always #10 i0 = ~i0;<br />
-always #55 i1 = ~i1;<br />
-endmodule**<br />
+	always #75 sel = ~sel;<br />
+	always #10 i0 = ~i0;<br />
+	always #55 i1 = ~i1;<br />
+	endmodule**<br />
 
 ![goodmuxgtkwaveCapture](https://user-images.githubusercontent.com/104454253/166117453-7f4918e9-acb4-4ad5-b35a-0933c8578312.JPG)
 
@@ -188,21 +196,21 @@ This image displays the power consumtion comparision.
 
 **LAB-5-SKY130RTL D2SK2 L1 Lab05 Hier synthesis flat synthesis part1**
 
-**multiple_module.v**
-module sub_module2 (input a, input b, output y);<br />
-	assign y = a | b;<br />
-endmodule<br />
+**multiple_module**
+	module sub_module2 (input a, input b, output y);<br />
+		assign y = a | b;<br />
+	endmodule<br />
 
-module sub_module1 (input a, input b, output y);<br />
-	assign y = a&b;<br />
-endmodule<br />
+	module sub_module1 (input a, input b, output y);<br />
+		assign y = a&b;<br />
+	endmodule<br />
 
 
-module multiple_modules (input a, input b, input c , output y);<br />
+	module multiple_modules (input a, input b, input c , output y);<br />
 	wire net1;<br />
 	sub_module1 u1(.a(a),.b(b),.y(net1));  //net1 = a&b<br />
 	sub_module2 u2(.a(net1),.b(c),.y(y));  //y = net1|c ,ie y = a&b + c;<br />
-endmodule<br />
+	endmodule<br />
 
 This is the schematic as per the connections in the above module.
 
@@ -214,41 +222,43 @@ However, the yosys synthesizer generates the following schematic instead of the 
 
 Thesynthesizer considers the module hierarcy and does the mapping accordting to instantiation. Here is the hierarchical netlist code for the  multiple_modules:
 
-**module multiple_modules(a, b, c, y); <br />
-  input a;<br />
-  input b;<br />
-  input c;<br />
-  wire net1;<br />
-  output y;<br />
-  sub_module1 u1 (.a(a),.b(b),.y(net1) );<br />
-  sub_module2 u2 (.a(net1),.b(c),.y(y));<br />
-endmodule<br />
-module sub_module1(a, b, y);<br />
-  wire _0_;<br />
-  wire _1_;<br />
-  wire _2_;<br />
-  input a;<br />
-  input b;<br />
-  output y;<br />
-  sky130_fd_sc_hd__and2_0 _3_ (.A(_1_),.B(_0_),.X(_2_));<br />
-  assign _1_ = b;<br />
-  assign _0_ = a;<br />
-  assign y = _2_;<br />
-endmodule<br />
-module sub_module2(a, b, y);<br />
-  wire _0_;<br />
-  wire _1_;<br />
-  wire _2_;<br />
-  input a;<br />
-  input b;<br />
-  output y;<br />
-  sky130_fd_sc_hd__lpflow_inputiso1p_1 _3_ (.A(_1_),.SLEEP(_0_),.X(_2_) );<br />
-  assign _1_ = b;<br />
-  assign _0_ = a;<br />
-  assign y = _2_;<br />
-endmodule**<br />
+	module multiple_modules(a, b, c, y); <br />
+		  input a;<br />
+ 		 input b;<br />
+ 		 input c;<br />
+		  wire net1;<br />
+ 		 output y;<br />
+ 	  sub_module1 u1 (.a(a),.b(b),.y(net1) );<br />
+	  sub_module2 u2 (.a(net1),.b(c),.y(y));<br />
+	endmodule<br />
+	
+	module sub_module1(a, b, y);<br />
+ 	 wire _0_;<br />
+ 	 wire _1_;<br />
+ 	 wire _2_;<br />
+ 	 input a;<br />
+ 	 input b;<br />
+ 	 output y;<br />
+ 	 sky130_fd_sc_hd__and2_0 _3_ (.A(_1_),.B(_0_),.X(_2_));<br />
+ 	 assign _1_ = b;<br />
+ 	 assign _0_ = a;<br />
+ 	 assign y = _2_;<br />
+	endmodule<br />
 
-**SKY130RTL D2SK2 L2 Lab05 Hier synthesis flat synthesis part2**
+	module sub_module2(a, b, y);<br />
+  	wire _0_;<br />
+ 	 wire _1_;<br />
+ 	 wire _2_;<br />
+  	input a;<br />
+  	input b;<br />
+ 	 output y;<br />
+ 	 sky130_fd_sc_hd__lpflow_inputiso1p_1 _3_ (.A(_1_),.SLEEP(_0_),.X(_2_) );<br />
+ 	 assign _1_ = b;<br />
+ 	 assign _0_ = a;<br />
+ 	 assign y = _2_;<br />
+	endmodule**<br />
+
+**SKY130RTL D2SK2 L2 Lab05 Hierarchical synthesis flat synthesis**
 Flattened netlist:
 
 In flanneted netlist, the hierarcies are flattend out and there is single module i.e, gates are instantiated directly instead of sub_modules. Here is the flattened netlist code for the  multiple_modules:
