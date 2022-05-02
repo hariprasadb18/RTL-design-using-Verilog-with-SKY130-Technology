@@ -512,9 +512,9 @@ The schematic for the same is shown below:
 
 ![mult8netlist](https://user-images.githubusercontent.com/104454253/166121455-11f0dee0-cc32-4438-8797-43853aa2bc07.JPG)
 
-# 4.- Day3 Combinational and sequential optmizations
+# 4. Day3 Combinational and sequential optmizations
 
-## 4.1. Combinational logic optimization with examples
+## 4.1 Combinational logic optimization with examples
 
 Optimising the combinational logic circuit is squeezing the logic to get the most optimized digital design so that the circuit finally is area and power efficient. This is achieved by the synthesis tool using various techniques and gives us the most optimized circuit.
 
