@@ -843,7 +843,7 @@ All the other blocks in synthesizer are for incrementing the counter but the out
 
 # 5. DAY4- GLS, blocking vs non-blocking and Synthesis-Simulation mismatch
 
-# 5.1 GLS, Synthesis-Simulation mismatch and Blocking/Non-blocking statements
+# 5.1 GLS, Synthesis-Simulation mismatch and Blocking, Non-blocking statements
 ### 5.1.1 GLS Concepts And Flow Using Iverilog
 
 **What is GLS- Gate Level Simulation?**:<br />
