@@ -17,9 +17,10 @@
             - [3.1.3.2 Interesting optimisations](#3132-Interesting-optimisations)
  - [4. Day3- Combinational and sequential optmizations](#4.-Day3--Combinational-and-sequential-optmizations)
     - [4.1 Combinational logic optimization with examples](#41-Combinational-logic-optimization-with-examples)
-    - [4.2 Sequential logic optimization with examples](#41-Sequential-logic-optimization-with-examples)
+    - [4.2 Sequential logic optimization with examples](#42-Sequential-logic-optimization-with-examples)
         - [4.2.1 Basic](#421-Basic)
         - [4.2.2 Advanced](#422-Advanced)
+        - [4.2.3 Sequential optimisation of unused outputs](#423-Sequential-optimisation-of-unused-outputs)
 # 1. Introduction
 This report is a final submission of 5-day workshop from [VLSI Sytem Design-IAT](https://www.vlsisystemdesign.com/) on RTL design and synthesis using open source tools, in particular iVerilog, GTKWave, Yosy and Skywater 130nm Standard Cell Libraries  
 # 2. Introduction to Verilog RTL design and Synthesis
@@ -621,7 +622,7 @@ Below are the various techniques used for sequential logic optimisations:<br />
  
 #### 4.2.1 Basic
 
-**Sequential contant propagation**-Here only the first logic can be optimized as the output of flp always zero. However for the second flop, the output changes continuously, therefor it cannot be used for contant propagation.
+**Sequential contant propagation**- Here only the first logic can be optimized as the output of flop is always zero. However for the second flop, the output changes continuously, therefor it cannot be used for contant propagation.
 
 ![1e34f504-64e1-411d-a668-5294c6ea78f5](https://user-images.githubusercontent.com/104454253/166128292-7faf6384-792a-4455-a847-350bb95b631f.jpg)
 
@@ -634,131 +635,174 @@ Below are the various techniques used for sequential logic optimisations:<br />
 
 **Retiming**: Retiming is a powerful sequential optimization technique used to move registers across the combinational logic or to optimize the number of registers to improve performance via power-delay trade-off, without changing the input-output behavior of the circuit. 
 
-**Example-1**
+**Example-1**<br />
+Here flop will be inferred as the output is not constant. <br />
+
+	module dff_const1(input clk, input reset, output reg q);
+		always @(posedge clk, posedge reset)
+		begin
+			if(reset)
+				q <= 1'b0;
+			else
+				q <= 1'b1;
+		end
+	endmodule
+
+**Simulation**
+
+![optimdff_const1](https://user-images.githubusercontent.com/104454253/166199133-1d0a9a00-eeb4-46ab-9115-25383ec1bcbd.JPG)
+
+**Synthesis**<br />
 In the synthesis report, we'll see that a Dflop was inferred in this example.
-module dff_const1(input clk, input reset, output reg q);
-always @(posedge clk, posedge reset)
-begin
-	if(reset)
-		q <= 1'b0;
-	else
-		q <= 1'b1;
-end
 
-endmodule
+![opt_dff_const1synthesis](https://user-images.githubusercontent.com/104454253/166199378-0679aafd-5663-4622-a59b-04a09332db14.JPG)
 
-**Example-2**
-module dff_const2(input clk, input reset, output reg q);
-always @(posedge clk, posedge reset)
-begin
-	if(reset)
-		q <= 1'b1;
-	else
-		q <= 1'b1;
-end
+![optmdff_const1report](https://user-images.githubusercontent.com/104454253/166199406-6ca38935-e5cf-4138-857b-05700d258356.JPG)
 
-endmodule
+**Example-2**<br />
+Here flop will not be inferred as the output is always high. <br />
 
-**SKY130RTL D3SK3 L2 Lab07 Sequential Logic Optimisations part2**
+	module dff_const2(input clk, input reset, output reg q);
+		always @(posedge clk, posedge reset)
+		begin
+			if(reset)
+				q <= 1'b1;
+			else
+				q <= 1'b1;
+		end
+	endmodule
+
+**Simulation**
+
+![optdff_const2](https://user-images.githubusercontent.com/104454253/166199273-8728b4d5-11fc-4652-8b32-698df254856f.JPG)
+
+**Synthesis**
+
+![optdff_const2synthesis](https://user-images.githubusercontent.com/104454253/166199696-4bc5c938-8381-4690-9b07-b59ba407862d.JPG)
+
+![optdffconst2report](https://user-images.githubusercontent.com/104454253/166199711-7a5f51df-a740-4c9c-a3ef-67d40e32c12a.JPG)
+
 **Example-3**
 
-module dff_const3(input clk, input reset, output reg q);
-reg q1;
+		module dff_const3(input clk, input reset, output reg q);
+		reg q1;
 
-always @(posedge clk, posedge reset)
-begin
-	if(reset)
-	begin
-		q <= 1'b1;
-		q1 <= 1'b0;
-	end
-	else
-	begin
-		q1 <= 1'b1;
-		q <= q1;
-	end
-end
+		always @(posedge clk, posedge reset)
+		begin
+			if(reset)
+			begin
+				q <= 1'b1;
+				q1 <= 1'b0;
+			end
+			else
+			begin
+				q1 <= 1'b1;
+				q <= q1;
+			end
+		end
+		endmodule
 
-endmodule
+**Simulation***
+
+![gtkwavedff_const3](https://user-images.githubusercontent.com/104454253/166200122-0c960389-20b1-497c-b1be-12a084944a77.JPG)
+
+**Synthesis**
+
+![optdff_const3](https://user-images.githubusercontent.com/104454253/166200223-a658f4f2-3ac0-4503-8292-298ba5e194ea.JPG)
 
 **Example4**
 
-module dff_const4(input clk, input reset, output reg q);
-reg q1;
+		module dff_const4(input clk, input reset, output reg q);
+		reg q1;
 
-always @(posedge clk, posedge reset)
-begin
-	if(reset)
-	begin
-		q <= 1'b1;
-		q1 <= 1'b1;
-	end
-	else
-	begin
-		q1 <= 1'b1;
-		q <= q1;
-	end
-end
+		always @(posedge clk, posedge reset)
+		begin
+			if(reset)
+			begin
+				q <= 1'b1;
+				q1 <= 1'b1;
+			end
+		else
+			begin
+				q1 <= 1'b1;
+				q <= q1;
+			end
+		end
+		endmodule
 
-endmodule
+**Simulation***
+
+![gtkwavedff_const4](https://user-images.githubusercontent.com/104454253/166200334-a0d60601-1092-49ef-8fbc-477c99210e92.JPG)
+
+**Synthesis**
+
+![optsynthdff_const4](https://user-images.githubusercontent.com/104454253/166200427-53425dc0-93f6-4137-882c-8f64d614103f.JPG)
 
 **Example5**
 
-module dff_const5(input clk, input reset, output reg q);
-reg q1;
+		module dff_const5(input clk, input reset, output reg q);
+		reg q1;
+		always @(posedge clk, posedge reset)
+			begin
+				if(reset)
+				begin
+					q <= 1'b0;
+					q1 <= 1'b0;
+				end
+			else
+				begin
+					q1 <= 1'b1;
+					q <= q1;
+				end
+			end
+		endmodule
 
-always @(posedge clk, posedge reset)
-begin
-	if(reset)
-	begin
-		q <= 1'b0;
-		q1 <= 1'b0;
-	end
-	else
-	begin
-		q1 <= 1'b1;
-		q <= q1;
-	end
-end
+**Simulation***
 
-endmodule
+![gtkwavedff_const5](https://user-images.githubusercontent.com/104454253/166200555-0ba4be08-592d-4fbd-8628-6e3a39f2999c.JPG)
 
-**SKY130RTL D3SK4 L1 Seq optimisation unused outputs part1**
+**Synthesis**
+
+![synthdff_const5](https://user-images.githubusercontent.com/104454253/166200573-6d8e2ed8-5e3f-423a-880f-f825e94ea457.JPG)
+
+### 4.2.3 Sequential optimisation of unused outputs
 **Example1**
 
-module counter_opt (input clk , input reset , output q);
-reg [2:0] count;
-assign q = count[0];
+		module counter_opt (input clk , input reset , output q);
+		reg [2:0] count;
+		assign q = count[0];
+		always @(posedge clk ,posedge reset)
+		begin
+			if(reset)
+				count <= 3'b000;
+			else
+				count <= count + 1;
+		end
+		endmodule
+		
+**Synthesis**
 
-always @(posedge clk ,posedge reset)
-begin
-	if(reset)
-		count <= 3'b000;
-	else
-		count <= count + 1;
-end
+![synthcounter_opt](https://user-images.githubusercontent.com/104454253/166201168-cadde883-f4dd-4de1-9e09-00dd5d06647c.JPG)
 
-endmodule
+**Updated counter logic-** 
 
-**SKY130RTL D3SK4 L2 Seq optimisation unused outputs part2**
+	module counter_opt (input clk , input reset , output q);
+		reg [2:0] count;
+		assign q = {count[2:0]==3'b100};
+		always @(posedge clk ,posedge reset)
+		begin
+		if(reset)
+			count <= 3'b000;
+		else
+			count <= count + 1;
+		end
+	endmodule
 
-Updated counter logic- 
+**Synthesis**
 
 All the other blocks in synthesizer are for incrementing the counter but the output is only from the three input NOR gate.
 
-module counter_opt (input clk , input reset , output q);
-reg [2:0] count;
-assign q = {count[2:0]==3'b100};
-
-always @(posedge clk ,posedge reset)
-begin
-	if(reset)
-		count <= 3'b000;
-	else
-		count <= count + 1;
-end
-
-endmodule
+![synthcounter_optupdated](https://user-images.githubusercontent.com/104454253/166201230-5459b740-9774-444e-b6db-ad6ccb8147ef.JPG)
 
 **DAY4-GLS, blocking vs non-blocking and Synthesis-Simulation mismatch**
 
