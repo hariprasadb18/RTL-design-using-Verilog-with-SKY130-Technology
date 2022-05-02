@@ -139,9 +139,9 @@ I was given an overview of the operation of the tool and the files we'll need to
 
 Below are the commands to perform above synthesis.
 
-RTL Design  - read_verilog
-.lib        - read_liberty
-netlist file- write_verilog
+- RTL Design  - read_verilog
+- .lib        - read_liberty
+- netlist file- write_verilog
 
 **Operational flow of Yosys Synthesizer**
 
