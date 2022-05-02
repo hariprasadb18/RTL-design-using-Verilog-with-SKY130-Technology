@@ -1045,11 +1045,11 @@ The below code is equivalent to two 2:1 mux with i0 and i2 as select lines with 
 		end
 	endmodule
 
-**Synthesis**
+**Simulation**
 
 ![gtkwaveincomp_if2](https://user-images.githubusercontent.com/104454253/166212933-520affd3-c367-4bbf-8ffc-14d30ca05ebe.JPG)
 
-**Simulation**
+**Synthesis**
 
 ![synthesisincomp_if2](https://user-images.githubusercontent.com/104454253/166212941-6ca8d979-1e4b-4ae1-b5f2-a74a229f5629.JPG)
 
@@ -1249,11 +1249,11 @@ The code in above example is big and also there is a chance of human error wile 
 	end
 	endmodule
 
-**Synthesis**
+**Simulation**
 
 ![simulationdemux_generate](https://user-images.githubusercontent.com/104454253/166215467-b947a96a-cce8-4dab-b551-8d05109bfc7c.JPG)
 
-**Simulation**
+**Synthesis**
 
 ![synthdemux_generate](https://user-images.githubusercontent.com/104454253/166215477-0cb58974-29e0-42ae-adf9-c96e1addefb5.JPG)
 
@@ -1282,11 +1282,11 @@ In this Ripple carry adder example, unlike instantiating fulladder for 8 times, 
 	module fa (input a , input b , input c, output co , output sum);
 	endmodule
 
-**Synthesis**
+**Simulation**
 
 ![sim_rca](https://user-images.githubusercontent.com/104454253/166215641-bb752eb7-9709-4c0a-a6b7-cce9cb585097.JPG)
 
-**Simulation**
+**Synthesis**
 
 ![synth_rca](https://user-images.githubusercontent.com/104454253/166215658-dc566124-519d-477d-8e4a-7b990b40c191.JPG)
 
