@@ -26,7 +26,7 @@
         - [5.1.1 GLS Concepts And Flow Using Iverilog](#511-GLS-Concepts-And-Flow-Using-Iverilog)
         - [5.1.2 Synthesis Simulation Mismatch](#512-Synthesis-Simulation-Mismatch)
     - [5.2 Lab- GLS Synth Sim Mismatch](#52-Lab--GLS-Synth-Sim-Mismatch)
-    - [5.3 Lab- Synthesis simulation mismatch blocking statement](#5.3-Lab--Synthesis-simulation-mismatch-blocking-statement)
+    - [5.3 Lab- Synthesis simulation mismatch blocking statement](#53-Lab--Synthesis-simulation-mismatch-blocking-statement)
  - [6. DAY5- if, case, for loop and for generate](#6.-DAY5--if,-case,-for-loop-and-for-generate)
     - [6.1 If Case constructs](#61-If-Case-constructs)
        - [6.1.1 If construct](#611-If-construct)
@@ -875,7 +875,7 @@ To avoid the synthesis and simulation mismatch. It is very important to check th
 
 Blocking statements execute the statemetns in the order they are written inside the always block. Non-Blocking statements execute all the RHS and once always block is entered, the values are assigned to LHS. This will give mismatch as sometimes, improper use of blocking statements can create latches. Please click here to go to example - [Example](Example)
 
-### 5.2 Lab- GLS Synthesis Simulation Mismatch
+## 5.2 Lab- GLS Synth Sim Mismatch
 
 **Example-1**
 
