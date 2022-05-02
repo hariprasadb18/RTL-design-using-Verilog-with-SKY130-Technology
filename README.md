@@ -990,7 +990,7 @@ This can be shown in below example:
 
 ![0ed60c6c-b272-4bc6-939b-df13f76fc063](https://user-images.githubusercontent.com/104454253/166262011-21800dd6-0427-4558-a75e-6bf928117bba.jpg)
 
-**Case construct and dangers of case construct:**<br />
+### 6.1.2 Case construct
 
 **Syntax**
 
